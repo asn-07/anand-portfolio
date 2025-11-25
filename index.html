@@ -1,199 +1,1514 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Anand's Resume</title>
-    <link rel="icon" type="image/x-icon" href="./assets/logoA.jpg">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anand Namastemath | Senior Software Engineer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #1a1a1a;
+            --accent: #00ff88;
+            --accent-glow: rgba(0, 255, 136, 0.3);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-muted: #666666;
+            --border-color: #2a2a2a;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
         body {
-            padding-top: 100px;
-            padding-bottom: 60px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
         }
-        
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            /* Center the DIV horizontally */
-        }
-        
-        .fixed-header,
-        .fixed-footer {
-            width: 100%;
+
+        /* Animated Background */
+        .bg-animation {
             position: fixed;
-            background: thistle;
-            padding: 5px 0;
-            color: #fff;
-        }
-    
-        .fixed-header {
             top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.03;
+            pointer-events: none;
         }
-   
-        
-    
-        .fixed-footer {
-            bottom: 0;
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image:
+                repeating-linear-gradient(90deg, var(--accent) 0px, transparent 1px, transparent 50px),
+                repeating-linear-gradient(0deg, var(--accent) 0px, transparent 1px, transparent 50px);
+            animation: gridMove 20s linear infinite;
         }
-        /* Some more styles to beutify this example */
-        
-        nav a {
-            color: #fff;
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Smooth Scroll Container */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        nav.scrolled {
+            padding: 15px 50px;
+            background: rgba(10, 10, 10, 0.95);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            color: var(--accent);
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
             text-decoration: none;
-            padding: 7px 25px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--accent);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 50px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .hero-text {
+            animation: fadeInLeft 1s ease-out;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .hero-tag:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            box-shadow: 0 0 30px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title .gradient-text {
+            background: linear-gradient(135deg, var(--accent), #00ccff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
             display: inline-block;
         }
-        
-        .container p {
-            line-height: 200px;
-            /* Create scrollbar to test positioning */
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Hero Image */
+        .hero-image {
+            position: relative;
+            animation: fadeInRight 1s ease-out;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .image-container::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 60px;
+            bottom: 60px;
+            border: 2px solid var(--accent);
+            border-radius: 20px;
+            z-index: 0;
+            animation: borderPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes borderPulse {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(10px, 10px); }
+        }
+
+        .image-container img {
+            position: relative;
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            display: block;
+            z-index: 1;
+            filter: grayscale(30%);
+            transition: var(--transition);
+        }
+
+        .image-container:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.02);
+        }
+
+        .floating-card {
+            position: absolute;
+            padding: 20px 30px;
+            background: rgba(26, 26, 26, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: floatCard 3s ease-in-out infinite;
+        }
+
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating-card-1 {
+            top: -5%;
+            right: -15%;
+            animation-delay: 0s;
+            z-index: 10;
+        }
+
+        .floating-card-2 {
+            bottom: -5%;
+            left: -15%;
+            animation-delay: 1.5s;
+            z-index: 10;
+        }
+
+        .floating-card-stat {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .floating-card-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Social Links */
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .social-link:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 100px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* About/Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .service-card {
+            padding: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 25px;
+            display: inline-block;
+            transition: var(--transition);
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotateY(360deg);
+        }
+
+        .service-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .service-description {
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        /* Resume Section */
+        .resume-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--accent), transparent);
+        }
+
+        .timeline-item {
+            margin-bottom: 50px;
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -47px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border: 3px solid var(--bg-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px var(--bg-card);
+            transition: var(--transition);
+        }
+
+        .timeline-item:hover::before {
+            box-shadow: 0 0 0 8px var(--accent-glow);
+            transform: scale(1.3);
+        }
+
+        .timeline-item:hover {
+            transform: translateX(10px);
+        }
+
+        .timeline-date {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .timeline-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .timeline-company {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .timeline-description {
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        /* Skills */
+        .skills-container {
+            padding: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+        }
+
+        .skill-category {
+            margin-bottom: 40px;
+        }
+
+        .skill-category:last-child {
+            margin-bottom: 0;
+        }
+
+        .skill-category-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .skill-tag {
+            padding: 10px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .skill-tag:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px var(--accent-glow);
+        }
+
+        /* Portfolio Grid */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .portfolio-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .portfolio-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .portfolio-card:hover .portfolio-image {
+            transform: scale(1.1);
+            filter: brightness(0.7);
+        }
+
+        .portfolio-content {
+            padding: 30px;
+        }
+
+        .portfolio-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .portfolio-description {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 255, 136, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .portfolio-card:hover .portfolio-overlay {
+            opacity: 1;
+        }
+
+        .portfolio-link {
+            padding: 15px 35px;
+            background: var(--bg-primary);
+            color: var(--accent);
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .portfolio-link:hover {
+            background: var(--text-primary);
+            transform: scale(1.1);
+        }
+
+        /* Achievements Section */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .achievement-card {
+            padding: 40px 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+            transition: var(--transition);
+        }
+
+        .achievement-card:hover::before {
+            left: 100%;
+            transition: left 0.7s;
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .achievement-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .achievement-text {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .contact-card {
+            padding: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .contact-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            display: inline-block;
+            transition: var(--transition);
+        }
+
+        .contact-card:hover .contact-icon {
+            transform: rotateY(360deg);
+        }
+
+        .contact-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .contact-info {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 50px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        /* Scroll to Top Button */
+        .scroll-top {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--accent-glow);
+        }
+
+        /* Cursor Effects */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease-out;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.15s ease-out;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-content,
+            .resume-content {
+                grid-template-columns: 1fr;
+                gap: 50px;
+            }
+
+            .hero-title {
+                font-size: 3.5rem;
+            }
+
+            .section-title {
+                font-size: 2.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 20px 30px;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                height: 100vh;
+                background: rgba(10, 10, 10, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: var(--transition);
+                border-left: 1px solid var(--border-color);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .menu-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(8px, 8px);
+            }
+
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .menu-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(8px, -8px);
+            }
+
+            .hero,
+            section {
+                padding: 60px 30px;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 2.2rem;
+            }
+
+            .floating-card {
+                display: none;
+            }
+
+            .services-grid,
+            .portfolio-grid,
+            .achievements-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loading Animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-text {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--accent);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
         }
     </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 </head>
-
 <body>
-    <div class="fixed-header">
-        <div class="container">
-            <nav>
-                <a href="#" class="navbar-brand">
-                    <img height="40" alt="Anand DP" src="./assets/logomenu.png" />
-                </a>
-
-                <a href="https://www.sololearn.com/profile/974121" target="_blank" style="float: right;">
-                    <img src="https://b24.am/en/pub/uploads/2018/09/maxresdefault_618022804.jpg" alt="SOLOLEARN" height="40">
-                </a>
-
-                <a href="https://github.com/asn-07" target="_blank" style="float: right;">
-                    <img height="40" alt="GitHub Logo" src="./assets/github.png" />
-                </a>
-
-                <a href="https://www.linkedin.com/in/anand-namastemath-84a956140/" target="_blank" style="float: right;">
-                    <img height="40" alt="LinkedIn Logo" src="./assets/linkedin.png" />
-                </a>
-
-            </nav>
-        </div>
+    <!-- Loader -->
+    <div class="loader">
+        <div class="loader-text">AN</div>
     </div>
 
+    <!-- Background Animation -->
+    <div class="bg-animation"></div>
 
-    <div class="container">
-        <img src="https://media-exp1.licdn.com/dms/image/C5603AQGaPyE6WImmUQ/profile-displayphoto-shrink_200_200/0/1609941849159?e=1623283200&v=beta&t=y-BiE3zpwcus7q0hILQXEhAr7sAXhkNC_0lIrgML1xQ" alt="Anand's Profile Picture" width="150" height="150">
-        <h1> Anand Namastemath </h1>
-        <br><strong> Software Developer </strong> <em><a href="https://snapbizz.com/" target="_blank"> SnapBizz Cloudtech Pvt Ltd</a> </em> Bengaluru
-        <address>
-        Contact : 7026310101 <br /> Email : <a href="mailto:anamastemath@gmail"> anamastemath@gmail.com </a>
-      </address>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
 
-        <hr size="3" noshade />
-
-        <h4>CAREER OBJECTIVE</h4>
-        Looking forward to work in an organization where I can implement my theoretical, logical, technical skills in the practical real-life environment with committed and dedicated people and would like to continue as a professional in the same field with the
-        best possible outcomes for the growth of the organization, hence becoming a useful asset to the organization and nation.
-        <hr size="3" noshade />
-
-        <h4>PROFESSIONAL SUMMARY</h4>
-        <ul>
-            <li>Very good implementation knowledge of <strong><em>OOP’s concepts, Multi-threading, Collections in Java</em></strong>.</li>
-            <li>Hands on experience on writing code using <strong><em>Java 1.8</em></strong>. Have good knowledge of
-                <strong><em>Lambda Expressions, Default and static methods, Method and Constructor
-              Reference, Streams</em></strong>.
-            </li>
-            <li>Involved in the Development of the applications using <strong><em>JAVA, REST APIs using Spring-Boot-framework, MYSQL, POSTGRESQL</em></strong>.</li>
-            <li>Basic knowledge of <em><strong>MongoDB Java Driver</em></strong>.</li>
-            <li>Basic knowledge of<em><strong>NodeJs</strong></em>.</li>   
-            <li>Experience in handling servers – Upcloud.</li>
-            <li>Good knowledge of <strong><em>Git Version Control, Bitbucket.</em></strong></li>
-            <li>Implemented <strong><em>Docker and PM2</em></strong> for various project deployment in servers.</li>
-            <li>Worked on different IDE’s like <strong><em>IntelliJ IDEA, Eclipse, VsCode.</em></strong></li>
-        </ul>
-        <hr size="3" noshade />
-        <h4>PROFESSIONAL EXPERIENCE</h4>
-        <ol>
-            <li>Currently working as a <strong><em>Backend Software Developer</em></strong> in <strong><em><a href="https://snapbizz.com/" target="_blank"> SnapBizz Cloudtech Pvt Ltd</a> </em></strong> Bengaluru from last 6 months.</li>
-            <li>1.3 years of experience as a <strong><em>Trainee Software Engineer</em></strong> in a company named
-                <strong><em><a href="https://www.obsessory.com/" target="_blank">Obsessory Online Services Private Ltd</a></em></strong> Bengaluru.
-            </li>
-            <li>Successfully completed 06 months of internship as <strong><em>Intern for Java
-              Development Team in RABSONS INFO WORLD </em></strong> Dharwad.</li>
-        </ol>
-        <hr size="3" noshade />
-        <h4>PROJECT PROFILE</h4>
-        <ol>
-
-            <li><strong>Data Migration</strong></li>
-            <ul>
-                <li><strong>Technologies Included</strong> : Spring-Boot, POSTGRESQL, MYSQL, NODEJS</li>
-                <li><strong>Summary</strong> : Since the existing application needed a database which handles more write operations simultaneously and complex query executions with large number of data, so POSTGRESQL is opted over MySQL. </li>
-                <li><strong>Roles and Responsibilities</strong> : Completely Understood the structure of the MYSQL database, And Moved to Postgresql using Spring-boot, same thing is done to NodeJs Project</li>
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Navigation -->
+        <nav>
+            <div class="logo" >AN</div>
+            <ul class="nav-links">
+                <li><a href="#home" class="active" >Home</a></li>
+                <li><a href="#about" >About</a></li>
+                <li><a href="#resume" >Resume</a></li>
+                <li><a href="#portfolio" >Portfolio</a></li>
+                <li><a href="#achievements" >Achievements</a></li>
+                <li><a href="#contact" >Contact</a></li>
             </ul>
-<br>
-            <li><strong>Mongo Adapter</strong></li>
-            <ul>
-                <li><strong>Technologies Included</strong> : Restlet, MongoDb</li>
-                <li><strong>Summary</strong> : A common Adapter class for MongoDB data to Create, Read, Update and  Delete All tables in common was to be written.</li>
-                <li><strong>Roles and Responsibilities</strong> : Understood the requirement and developed a common Adapter class.</li>
-            </ul>
-<br>
-            <li><strong>AML-Backend and Data-Extraction</strong></li>
-            <ul>
-                <li><strong>Technologies Included</strong> : Spring-Boot, POSTGRESQL</li>
-                <li><strong>Summary</strong> : It is an application where AML data is extracted from various authorized websites and mapped into the database. Later indexed into elastic search to show into front- end.</li>
-                <li><strong>Roles and Responsibilities</strong> : Involved in planning, creating database and architecture of the project, Developed API’s to Map the Data into DB.</li>
-            </ul>
-<br>
-            <li><strong><a href="https://www.kychub.com/" target="_blank">KycHub</a></strong></li>
-            <ul>
-                <li><strong>Technologies Included</strong> : Spring-Boot, MYSQL, DOCKER, Nginx</li>
-                <li><strong>Summary</strong> : An interface that provides KYC services like ID check, Address Check, AML check, Adverse Media Check, Corporate Check.</li>
-                <li><strong>Roles and Responsibilities</strong> : Developed REST APIs, Resolved issues, Involved in cleaning code.</li>
-            </ul>
-<br>
-            <li><strong><a href="https://inspo.shop/" target="_blank">Inspo.shop</a></strong></li>
-            <ul>
-                <li><strong>Technologies Included</strong> : Spring-Boot, MYSQL, DOCKER, NGINX</li>
-                <li><strong>Summary</strong> : Performance-driven micro-influencer campaigns and content monetization tool. InspoShop has features like image tagging and a separate widget application for bloggers running in an iframe on the blogger's website.</li>
-                <li><strong>Roles and Responsibilities</strong> : Developed REST APIs for the web app, public profile, widgets, and infographics. Gone through various REST APIs. Involved in the production release.</li>
-            </ul>
-        </ol>
-        <hr size="3" noshade />
-        <h4>EDUCATIONAL QUALIFICATION</h4>
-        <ul>
-            <li>Bachelor of engineering in Computer Science in 2018 from KLS’s VDIT HALIYAL.
-            </li>
-            <li>PUC from JSS PU College Dharwad.</li>
-            <li>SSLC from SJD High School Nidasoshi</li>
-        </ul>
-        <hr size="3" noshade />
-        <h4>STRENGTHS</h4>
-        <ul>
-            <li>Good managing skills and leadership qualities.</li>
-            <li>Ability to work as an individual as well as in a group.</li>
-            <li>Adaptable and Fast learner.</li>
-            <li>Ability to produce the best result in a pressure situation.</li>
-        </ul>
-        <hr size="3" noshade />
-        <h4>DECLARATION</h4>
-        I, <strong>Anand Namastemath</strong> do hereby declare that the above-mentioned information is correct up to my knowledge and I bear the responsibility for the correctness of the above-mentioned particulars.
+            <div class="menu-toggle" >
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
 
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="hero-tag" >Available for Freelance</div>
+                    <h1 class="hero-title">
+                        Hi, I'm<br>
+                        <span class="gradient-text">Anand Namastemath</span>
+                    </h1>
+                    <p class="hero-subtitle">Senior Software Engineer</p>
+                    <p class="hero-description">
+                        Backend Engineering Lead with 5+ years of experience architecting scalable systems for enterprise-grade applications.
+                        Delivered production-ready Verizon Cloud MVP in just 2 months—a POC that was pending for 5-6 months—by leveraging AI-accelerated development and modern microservices architecture.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn btn-primary" >
+                            <i class="fas fa-paper-plane"></i> Get In Touch
+                        </a>
+                        <a href="#portfolio" class="btn btn-secondary" >
+                            <i class="fas fa-briefcase"></i> View Work
+                        </a>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/anand-namastemath" class="social-link"  target="_blank">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://github.com/asn-07" class="social-link"  target="_blank">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-link" >
+                            <i class="fab fa-stack-overflow"></i>
+                        </a>
+                        <a href="#" class="social-link" >
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="image-container">
+                        <img src="https://media.licdn.com/dms/image/v2/D5603AQGNjJg6wVY_LQ/profile-displayphoto-crop_800_800/B56ZnWbxc7H8AI-/0/1760239230372?e=1765411200&v=beta&t=KsnTa4YACm0Bjc3xaIpTz5jTnTciMomNts6XHVZGSlM" alt="Anand Namastemath">
+                        <div class="floating-card floating-card-1" >
+                            <div class="floating-card-stat">5+</div>
+                            <div class="floating-card-label">Years Experience</div>
+                        </div>
+                        <div class="floating-card floating-card-2" >
+                            <div class="floating-card-stat">50+</div>
+                            <div class="floating-card-label">Projects Done</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="reveal">
+            <div class="section-header">
+                <div class="section-tag">Services</div>
+                <h2 class="section-title">What I Do</h2>
+                <p class="section-description">
+                    Specialized in building robust backend systems and cloud infrastructure
+                </p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card" >
+                    <i class="fas fa-code service-icon"></i>
+                    <h3 class="service-title">Backend Engineering</h3>
+                    <p class="service-description">
+                        Expert in Java (8, 17, 21), Spring Boot 3, and microservices architecture. Delivered 8 of 10 core microservices for Verizon Cloud with 99.9% uptime.
+                    </p>
+                </div>
+                <div class="service-card" >
+                    <i class="fas fa-project-diagram service-icon"></i>
+                    <h3 class="service-title">System Architecture</h3>
+                    <p class="service-description">
+                        Designing scalable, high-performance microservices systems bridging business & technology requirements.
+                    </p>
+                </div>
+                <div class="service-card" >
+                    <i class="fas fa-cloud service-icon"></i>
+                    <h3 class="service-title">DevOps & Cloud</h3>
+                    <p class="service-description">
+                        End-to-end AWS infrastructure (EC2, RDS, ALB, S3), Docker/OpenShift containerization, and CI/CD pipelines. Achieved 30% cost reduction and 87.5% faster deployments.
+                    </p>
+                </div>
+                <div class="service-card" >
+                    <i class="fas fa-tachometer-alt service-icon"></i>
+                    <h3 class="service-title">Performance Optimization</h3>
+                    <p class="service-description">
+                        Optimized API response times by 40% (800ms → 480ms) through Redis caching, database query optimization, and proper indexing strategies.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resume Section -->
+        <section id="resume" class="reveal">
+            <div class="section-header">
+                <div class="section-tag">Experience</div>
+                <h2 class="section-title">My Journey</h2>
+            </div>
+            <div class="resume-content">
+                <div>
+                    <h3 style="font-size: 1.8rem; margin-bottom: 40px; color: var(--accent);">
+                        <i class="fas fa-briefcase" style="margin-right: 10px;"></i> Work History
+                    </h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-date">Sep 2024 – Present</div>
+                            <h4 class="timeline-title">Engineer III - Software Development</h4>
+                            <p class="timeline-company">Verizon India</p>
+                            <p class="timeline-description">
+                                Leading Verizon Cloud modernization (Project Leo), migrating from legacy TypeScript monolith to Java 21/Spring Boot 3 microservices. Delivered production-ready MVP in 2 months (a POC pending for 5-6 months) by leveraging AI-accelerated development. Architected 8 of 10 core microservices with 99.9% uptime, reduced deployment time by 87.5% through CI/CD automation, and implemented custom API Gateway reducing authentication latency by 45%.
+                            </p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">Jan 2021 – Sep 2024</div>
+                            <h4 class="timeline-title">Lead Engineer</h4>
+                            <p class="timeline-company">Snapbizz Cloudtech</p>
+                            <p class="timeline-description">
+                                Led 4-member backend team with 95%+ test coverage and zero P0 incidents for 6+ months. Owned full AWS infrastructure (EC2, RDS, ALB, S3), achieving 30% cost reduction through Docker containerization. Improved API response times by 40% through Redis caching and query optimization. Reduced new developer onboarding from 2 days to 2 hours with Docker Compose environments.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.8rem; margin-bottom: 40px; color: var(--accent);">
+                        <i class="fas fa-graduation-cap" style="margin-right: 10px;"></i> Skills
+                    </h3>
+                    <div class="skills-container">
+                        <div class="skill-category">
+                            <h4 class="skill-category-title">Core Competencies</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag" >Microservices</span>
+                                <span class="skill-tag" >Distributed Systems</span>
+                                <span class="skill-tag" >System Design</span>
+                                <span class="skill-tag" >DevOps</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4 class="skill-category-title">Languages</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag" >Java 21</span>
+                                <span class="skill-tag" >JavaScript</span>
+                                <span class="skill-tag" >SQL</span>
+                                <span class="skill-tag" >NoSQL</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4 class="skill-category-title">Frameworks & Tools</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag" >Spring Boot 3</span>
+                                <span class="skill-tag" >Docker</span>
+                                <span class="skill-tag" >OpenShift</span>
+                                <span class="skill-tag" >AWS</span>
+                                <span class="skill-tag" >Redis</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Section -->
+        <section id="portfolio" class="reveal">
+            <div class="section-header">
+                <div class="section-tag">Projects</div>
+                <h2 class="section-title">Featured Work</h2>
+            </div>
+            <div class="portfolio-grid">
+                <div class="portfolio-card">
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Verizon Cloud Modernization" class="portfolio-image">
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">Verizon Cloud (Project Leo)</h3>
+                        <p class="portfolio-description">MVP delivered in 2 months—a 5-6 month pending POC completed with AI-accelerated microservices architecture</p>
+                    </div>
+                    <div class="portfolio-overlay">
+                        <a href="#" class="portfolio-link">View Project</a>
+                    </div>
+                </div>
+                <div class="portfolio-card">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="API Gateway" class="portfolio-image">
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">Custom API Gateway</h3>
+                        <p class="portfolio-description">Spring Cloud Gateway with OAuth2/JWT authentication, reducing latency by 45%</p>
+                    </div>
+                    <div class="portfolio-overlay">
+                        <a href="#" class="portfolio-link">View Project</a>
+                    </div>
+                </div>
+                <div class="portfolio-card">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Resumable Upload System" class="portfolio-image">
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">Resumable Upload System</h3>
+                        <p class="portfolio-description">Custom chunked upload protocol reducing failures and server memory overhead by 70%</p>
+                    </div>
+                    <div class="portfolio-overlay">
+                        <a href="#" class="portfolio-link">View Project</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Achievements Section -->
+        <section id="achievements" class="reveal">
+            <div class="section-header">
+                <div class="section-tag">Milestones</div>
+                <h2 class="section-title">Key Achievements</h2>
+            </div>
+            <div class="achievements-grid">
+                <div class="achievement-card">
+                    <span class="achievement-number">2 Months</span>
+                    <p class="achievement-text">Delivered POC pending for 5-6 months using AI-accelerated development</p>
+                </div>
+                <div class="achievement-card">
+                    <span class="achievement-number">87.5%</span>
+                    <p class="achievement-text">Reduced deployment time (2hrs → 15min) through CI/CD automation</p>
+                </div>
+                <div class="achievement-card">
+                    <span class="achievement-number">99.9%</span>
+                    <p class="achievement-text">Service uptime for mission-critical Verizon Cloud microservices</p>
+                </div>
+                <div class="achievement-card">
+                    <span class="achievement-number">45%</span>
+                    <p class="achievement-text">Reduced authentication latency with custom API Gateway</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="reveal">
+            <div class="section-header">
+                <div class="section-tag">Get In Touch</div>
+                <h2 class="section-title">Contact Me</h2>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-card" >
+                    <i class="fas fa-map-marker-alt contact-icon"></i>
+                    <div class="contact-label">Location</div>
+                    <div class="contact-info">Bengaluru, India</div>
+                </div>
+                <div class="contact-card" >
+                    <i class="fas fa-phone contact-icon"></i>
+                    <div class="contact-label">Phone</div>
+                    <div class="contact-info">+91 7026310101</div>
+                </div>
+                <div class="contact-card" >
+                    <i class="fas fa-envelope contact-icon"></i>
+                    <div class="contact-label">Email</div>
+                    <div class="contact-info">anamastemath@gmail.com</div>
+                </div>
+                <div class="contact-card" >
+                    <i class="fas fa-check-circle contact-icon"></i>
+                    <div class="contact-label">Availability</div>
+                    <div class="contact-info">Open to Opportunities</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2025 Anand Namastemath. Crafted with passion and precision.</p>
+        </footer>
     </div>
 
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" >
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
-    <div class="fixed-footer">
-        <div class="container">
+    <script>
 
-            <span class="text-muted">
-                All Rights Reserved 2021 <a href="https://www.facebook.com/anand.namastemath" target="_blank">@asn</a>
-            </span>
-        </div>
-    </div>
+        // Loader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loader').classList.add('hidden');
+            }, 1000);
+        });
 
+        // Custom Cursor
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
 
+        document.addEventListener('mousemove', (e) => {
+            cursorDot.style.left = e.clientX + 'px';
+            cursorDot.style.top = e.clientY + 'px';
 
+            cursorOutline.style.left = e.clientX + 'px';
+            cursorOutline.style.top = e.clientY + 'px';
+        });
+
+        document.querySelectorAll('a, button, .service-card, .portfolio-card, .achievement-card, .skill-tag').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(2)';
+                cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+        });
+
+        // Navigation
+        const nav = document.querySelector('nav');
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        const navItems = document.querySelectorAll('.nav-links a');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        navItems.forEach(link => {
+            link.addEventListener('click', () => {
+                navItems.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Smooth Reveal on Scroll
+        const reveals = document.querySelectorAll('.reveal');
+
+        const revealOnScroll = () => {
+            reveals.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+
+        // Scroll to Top Button
+        const scrollTopBtn = document.querySelector('.scroll-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Active Section Tracking
+        const sections = document.querySelectorAll('section[id]');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').slice(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Parallax Effect for Hero Image
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const heroImage = document.querySelector('.hero-image');
+            if (heroImage && scrolled < window.innerHeight) {
+                heroImage.style.transform = `translateY(${scrolled * 0.3}px)`;
+            }
+        });
+    </script>
 </body>
-
 </html>
