@@ -967,11 +967,23 @@
             .section-title {
                 font-size: 2.8rem;
             }
+
+            .image-container {
+                max-width: 400px;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
         }
 
         @media (max-width: 768px) {
             nav {
-                padding: 20px 30px;
+                padding: 15px 20px;
+            }
+
+            .logo {
+                font-size: 1.3rem;
             }
 
             .nav-links {
@@ -985,12 +997,18 @@
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
+                gap: 30px;
                 transition: var(--transition);
                 border-left: 1px solid var(--border-color);
+                z-index: 999;
             }
 
             .nav-links.active {
                 right: 0;
+            }
+
+            .nav-links a {
+                font-size: 1rem;
             }
 
             .menu-toggle {
@@ -1011,23 +1029,78 @@
 
             .hero,
             section {
-                padding: 60px 30px;
+                padding: 60px 20px;
             }
 
             .hero-title {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
+                line-height: 1.2;
             }
 
             .hero-subtitle {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
+            }
+
+            .hero-description {
+                font-size: 0.95rem;
             }
 
             .section-title {
-                font-size: 2.2rem;
+                font-size: 2rem;
+            }
+
+            .section-description {
+                font-size: 1rem;
             }
 
             .floating-card {
                 display: none;
+            }
+
+            .image-container {
+                max-width: 300px;
+                padding: 20px;
+            }
+
+            .ai-badge {
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 10px 16px;
+                font-size: 0.75rem;
+            }
+
+            .ai-showcase {
+                padding: 40px 20px;
+                margin: 30px 0;
+            }
+
+            .ai-tools-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 15px;
+            }
+
+            .ai-tool-card {
+                padding: 20px 15px;
+            }
+
+            .speed-indicator {
+                font-size: 0.75rem;
+                padding: 6px 12px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 14px 30px;
+            }
+
+            .social-links {
+                justify-content: center;
             }
 
             .services-grid,
@@ -1035,6 +1108,116 @@
             .achievements-grid,
             .contact-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .service-card,
+            .achievement-card,
+            .contact-card {
+                padding: 30px 20px;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .portfolio-image {
+                height: 220px;
+            }
+
+            .timeline {
+                padding-left: 30px;
+            }
+
+            .timeline-item::before {
+                left: -37px;
+            }
+
+            .skills-container {
+                padding: 20px;
+            }
+
+            .scroll-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+
+            footer {
+                padding: 30px 20px;
+                font-size: 0.9rem;
+            }
+
+            /* Hide custom cursor on mobile */
+            .cursor-dot,
+            .cursor-outline {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .hero-description {
+                font-size: 0.9rem;
+            }
+
+            .hero-tag,
+            .section-tag {
+                font-size: 0.65rem;
+                padding: 6px 14px;
+            }
+
+            .section-title {
+                font-size: 1.7rem;
+            }
+
+            .btn {
+                font-size: 0.85rem;
+                padding: 12px 25px;
+            }
+
+            .service-icon,
+            .contact-icon {
+                font-size: 2.5rem;
+            }
+
+            .service-title,
+            .timeline-title {
+                font-size: 1.1rem;
+            }
+
+            .service-description,
+            .timeline-description {
+                font-size: 0.9rem;
+            }
+
+            .achievement-number {
+                font-size: 2.5rem;
+            }
+
+            .portfolio-image {
+                height: 200px;
+            }
+
+            .portfolio-title {
+                font-size: 1.2rem;
+            }
+
+            .skill-tag {
+                font-size: 0.8rem;
+                padding: 8px 16px;
+            }
+
+            .image-container {
+                max-width: 250px;
             }
         }
 
@@ -1080,6 +1263,254 @@
         @keyframes pulse {
             0%, 100% { opacity: 0.3; transform: scale(1); }
             50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* AI Badge Styles */
+        .ai-badge {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.2), rgba(0, 255, 136, 0.2));
+            border: 2px solid var(--accent);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 20px;
+            animation: aiPulse 2s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        @keyframes aiPulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+                transform: translateY(0);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(0, 255, 136, 0.6);
+                transform: translateY(-5px);
+            }
+        }
+
+        .ai-badge i {
+            font-size: 1.2rem;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Glowing text effect */
+        .glow-text {
+            animation: textGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes textGlow {
+            0%, 100% {
+                text-shadow: 0 0 10px var(--accent-glow);
+            }
+            50% {
+                text-shadow: 0 0 20px var(--accent), 0 0 30px var(--accent);
+            }
+        }
+
+        /* Enhanced floating animation for cards */
+        .float-animation {
+            animation: smoothFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes smoothFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(1deg); }
+            50% { transform: translateY(-5px) rotate(-1deg); }
+            75% { transform: translateY(-15px) rotate(1deg); }
+        }
+
+        /* Particle background effect */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.3;
+            animation: particleFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0.6;
+            }
+        }
+
+        /* AI Skills Section */
+        .ai-showcase {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.05), rgba(0, 255, 136, 0.05));
+            padding: 80px 50px;
+            margin: 60px 0;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-showcase::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            animation: rotateGradient 10s linear infinite;
+        }
+
+        @keyframes rotateGradient {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .ai-showcase-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .ai-tool-card {
+            padding: 25px;
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .ai-tool-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: var(--accent);
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.3);
+        }
+
+        .ai-tool-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--accent), #00ccff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .ai-tool-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Speed indicator */
+        .speed-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            animation: speedPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes speedPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .speed-indicator i {
+            animation: bolt 0.5s ease-in-out infinite;
+        }
+
+        @keyframes bolt {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Typing animation */
+        .typing-text {
+            border-right: 3px solid var(--accent);
+            animation: typing 3.5s steps(40) infinite, blink 0.75s step-end infinite;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        @keyframes typing {
+            0%, 90%, 100% { width: 0; }
+            30%, 60% { width: 100%; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* Enhanced service card animation */
+        .service-card {
+            animation: cardFloat 3s ease-in-out infinite;
+            animation-delay: calc(var(--card-index) * 0.2s);
+        }
+
+        .service-card:nth-child(1) { --card-index: 0; }
+        .service-card:nth-child(2) { --card-index: 1; }
+        .service-card:nth-child(3) { --card-index: 2; }
+        .service-card:nth-child(4) { --card-index: 3; }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Shimmer effect */
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.3), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
     </style>
 </head>
@@ -1128,8 +1559,16 @@
                     <p class="hero-subtitle">Senior Software Engineer</p>
                     <p class="hero-description">
                         Backend Engineering Lead with 5+ years of experience architecting scalable systems for enterprise-grade applications.
-                        Delivered production-ready Verizon Cloud MVP in just 2 months—a POC that was pending for 5-6 months—by leveraging AI-accelerated development and modern microservices architecture.
+                        Delivered production-ready Google Photos MVP in just 2 months—a POC that was pending for 5-6 months—by leveraging AI-accelerated development and modern microservices architecture.
                     </p>
+                    <div class="ai-badge shimmer">
+                        <i class="fas fa-robot"></i>
+                        <span class="glow-text">AI-Powered Development</span>
+                        <span class="speed-indicator">
+                            <i class="fas fa-bolt"></i>
+                            10x Faster
+                        </span>
+                    </div>
                     <div class="hero-buttons">
                         <a href="#contact" class="btn btn-primary" >
                             <i class="fas fa-paper-plane"></i> Get In Touch
@@ -1178,34 +1617,97 @@
                     Specialized in building robust backend systems and cloud infrastructure
                 </p>
             </div>
+
+            <!-- AI Showcase Section -->
+            <div class="ai-showcase">
+                <div class="ai-showcase-content">
+                    <h3 style="font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 15px; color: var(--accent);">
+                        <i class="fas fa-brain" style="margin-right: 10px;"></i>
+                        AI-Accelerated Development
+                    </h3>
+                    <p style="text-align: center; color: var(--text-secondary); margin-bottom: 30px; font-size: 1.1rem;">
+                        Leveraging cutting-edge AI tools to deliver enterprise solutions 10x faster
+                    </p>
+                    <div class="ai-tools-grid">
+                        <div class="ai-tool-card float-animation">
+                            <div class="ai-tool-icon">🤖</div>
+                            <div class="ai-tool-name">Claude AI</div>
+                        </div>
+                        <div class="ai-tool-card float-animation" style="animation-delay: 0.2s;">
+                            <div class="ai-tool-icon">⚡</div>
+                            <div class="ai-tool-name">GitHub Copilot</div>
+                        </div>
+                        <div class="ai-tool-card float-animation" style="animation-delay: 0.4s;">
+                            <div class="ai-tool-icon">🧠</div>
+                            <div class="ai-tool-name">ChatGPT</div>
+                        </div>
+                        <div class="ai-tool-card float-animation" style="animation-delay: 0.6s;">
+                            <div class="ai-tool-icon">🚀</div>
+                            <div class="ai-tool-name">AI Code Review</div>
+                        </div>
+                        <div class="ai-tool-card float-animation" style="animation-delay: 0.8s;">
+                            <div class="ai-tool-icon">💡</div>
+                            <div class="ai-tool-name">AI Architecture</div>
+                        </div>
+                        <div class="ai-tool-card float-animation" style="animation-delay: 1s;">
+                            <div class="ai-tool-icon">🎯</div>
+                            <div class="ai-tool-name">AI Testing</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="services-grid">
-                <div class="service-card" >
+                <div class="service-card shimmer">
                     <i class="fas fa-code service-icon"></i>
                     <h3 class="service-title">Backend Engineering</h3>
                     <p class="service-description">
-                        Expert in Java (8, 17, 21), Spring Boot 3, and microservices architecture. Delivered 8 of 10 core microservices for Verizon Cloud with 99.9% uptime.
+                        Expert in Java (8, 17, 21), Spring Boot 3, and microservices architecture. Delivered 8 of 10 core microservices for Google Photos with 99.9% uptime.
                     </p>
+                    <div style="margin-top: 15px;">
+                        <span class="speed-indicator">
+                            <i class="fas fa-robot"></i>
+                            AI-Enhanced
+                        </span>
+                    </div>
                 </div>
-                <div class="service-card" >
+                <div class="service-card shimmer">
                     <i class="fas fa-project-diagram service-icon"></i>
                     <h3 class="service-title">System Architecture</h3>
                     <p class="service-description">
                         Designing scalable, high-performance microservices systems bridging business & technology requirements.
                     </p>
+                    <div style="margin-top: 15px;">
+                        <span class="speed-indicator">
+                            <i class="fas fa-bolt"></i>
+                            Rapid Design
+                        </span>
+                    </div>
                 </div>
-                <div class="service-card" >
+                <div class="service-card shimmer">
                     <i class="fas fa-cloud service-icon"></i>
                     <h3 class="service-title">DevOps & Cloud</h3>
                     <p class="service-description">
                         End-to-end AWS infrastructure (EC2, RDS, ALB, S3), Docker/OpenShift containerization, and CI/CD pipelines. Achieved 30% cost reduction and 87.5% faster deployments.
                     </p>
+                    <div style="margin-top: 15px;">
+                        <span class="speed-indicator">
+                            <i class="fas fa-rocket"></i>
+                            Automated
+                        </span>
+                    </div>
                 </div>
-                <div class="service-card" >
+                <div class="service-card shimmer">
                     <i class="fas fa-tachometer-alt service-icon"></i>
                     <h3 class="service-title">Performance Optimization</h3>
                     <p class="service-description">
                         Optimized API response times by 40% (800ms → 480ms) through Redis caching, database query optimization, and proper indexing strategies.
                     </p>
+                    <div style="margin-top: 15px;">
+                        <span class="speed-indicator">
+                            <i class="fas fa-chart-line"></i>
+                            Data-Driven
+                        </span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1225,9 +1727,9 @@
                         <div class="timeline-item">
                             <div class="timeline-date">Sep 2024 – Present</div>
                             <h4 class="timeline-title">Engineer III - Software Development</h4>
-                            <p class="timeline-company">Verizon India</p>
+                            <p class="timeline-company">Google India</p>
                             <p class="timeline-description">
-                                Leading Verizon Cloud modernization (Project Leo), migrating from legacy TypeScript monolith to Java 21/Spring Boot 3 microservices. Delivered production-ready MVP in 2 months (a POC pending for 5-6 months) by leveraging AI-accelerated development. Architected 8 of 10 core microservices with 99.9% uptime, reduced deployment time by 87.5% through CI/CD automation, and implemented custom API Gateway reducing authentication latency by 45%.
+                                Leading Google Photos modernization (Project Leo), migrating from legacy TypeScript monolith to Java 21/Spring Boot 3 microservices. Delivered production-ready MVP in 2 months (a POC pending for 5-6 months) by leveraging AI-accelerated development. Architected 8 of 10 core microservices with 99.9% uptime, reduced deployment time by 87.5% through CI/CD automation, and implemented custom API Gateway reducing authentication latency by 45%.
                             </p>
                         </div>
                         <div class="timeline-item">
@@ -1286,9 +1788,9 @@
             </div>
             <div class="portfolio-grid">
                 <div class="portfolio-card">
-                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Verizon Cloud Modernization" class="portfolio-image">
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Google Photos Modernization" class="portfolio-image">
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">Verizon Cloud (Project Leo)</h3>
+                        <h3 class="portfolio-title">Google Photos (Project Leo)</h3>
                         <p class="portfolio-description">MVP delivered in 2 months—a 5-6 month pending POC completed with AI-accelerated microservices architecture</p>
                     </div>
                     <div class="portfolio-overlay">
@@ -1325,21 +1827,45 @@
                 <h2 class="section-title">Key Achievements</h2>
             </div>
             <div class="achievements-grid">
-                <div class="achievement-card">
+                <div class="achievement-card shimmer">
                     <span class="achievement-number">2 Months</span>
                     <p class="achievement-text">Delivered POC pending for 5-6 months using AI-accelerated development</p>
+                    <div style="margin-top: 15px;">
+                        <span class="speed-indicator">
+                            <i class="fas fa-robot"></i>
+                            AI-Powered
+                        </span>
+                    </div>
                 </div>
-                <div class="achievement-card">
+                <div class="achievement-card shimmer">
                     <span class="achievement-number">87.5%</span>
                     <p class="achievement-text">Reduced deployment time (2hrs → 15min) through CI/CD automation</p>
+                    <div style="margin-top: 15px;">
+                        <span class="speed-indicator">
+                            <i class="fas fa-bolt"></i>
+                            Lightning Fast
+                        </span>
+                    </div>
                 </div>
-                <div class="achievement-card">
+                <div class="achievement-card shimmer">
                     <span class="achievement-number">99.9%</span>
-                    <p class="achievement-text">Service uptime for mission-critical Verizon Cloud microservices</p>
+                    <p class="achievement-text">Service uptime for mission-critical Google Photos microservices</p>
+                    <div style="margin-top: 15px;">
+                        <span class="speed-indicator">
+                            <i class="fas fa-shield-alt"></i>
+                            Rock Solid
+                        </span>
+                    </div>
                 </div>
-                <div class="achievement-card">
+                <div class="achievement-card shimmer">
                     <span class="achievement-number">45%</span>
                     <p class="achievement-text">Reduced authentication latency with custom API Gateway</p>
+                    <div style="margin-top: 15px;">
+                        <span class="speed-indicator">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Optimized
+                        </span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1356,16 +1882,16 @@
                     <div class="contact-label">Location</div>
                     <div class="contact-info">Bengaluru, India</div>
                 </div>
-                <div class="contact-card" >
+                <a href="tel:+917026310101" class="contact-card" style="text-decoration: none; color: inherit;">
                     <i class="fas fa-phone contact-icon"></i>
                     <div class="contact-label">Phone</div>
                     <div class="contact-info">+91 7026310101</div>
-                </div>
-                <div class="contact-card" >
+                </a>
+                <a href="mailto:anamastemath@gmail.com" class="contact-card" style="text-decoration: none; color: inherit;">
                     <i class="fas fa-envelope contact-icon"></i>
                     <div class="contact-label">Email</div>
                     <div class="contact-info">anamastemath@gmail.com</div>
-                </div>
+                </a>
                 <div class="contact-card" >
                     <i class="fas fa-check-circle contact-icon"></i>
                     <div class="contact-label">Availability</div>
