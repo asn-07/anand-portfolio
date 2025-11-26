@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #007acc;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #666;
+        }
+        .diagram-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        ul {
+            line-height: 1.8;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+<h1>🏗️ System Architecture</h1>
+
+<div class="diagram-container">
+    <h2>High-Level Architecture Diagram</h2>
+    <div class="mermaid">
+        graph TB
+        Client[Client Applications]
+
+        subgraph "API Gateway Layer"
+        Gateway[Gateway-Service<br/>Authentication & Routing<br/>JWT Decode → X-User-Id Header]
+        end
+
+        subgraph "Core Services"
+        Auth[Auth-Service<br/>Login/Signup<br/>PIN Management<br/>Folder Lock/Unlock]
+        Asset[Asset-Service<br/>Bulk Check API<br/>Asset Upload/Update/Delete<br/>Asset Retrieval]
+        AssetV2[Asset-Service-v2<br/>TUS Resumable Upload]
+        Album[Album-Timeline-Service<br/>Buckets API<br/>Memories API<br/>Albums API]
+        Search[Search-Service<br/>Asset Search<br/>City Search]
+        end
+
+        subgraph "Background Workers"
+        ImgProc[Image-Processor<br/>Workers:<br/>• Metadata Extraction<br/>• Thumbnail Generation<br/>• Memory Processor<br/>100ms polling interval]
+        VidProc[Video-Processor<br/>Workers:<br/>• Video Transcoding to 480p<br/>• FFMPEG Processing<br/>100ms polling interval]
+        end
+
+        subgraph "Data Layer"
+        Postgres[(PostgreSQL<br/>Primary Database)]
+        Redis[(Redis<br/>Job Queue)]
+        DLQ[(Dead Letter Queue<br/>Failed Jobs after 3 retries)]
+        end
+
+        subgraph "Storage"
+        FileStore[File Storage<br/>Assets & Thumbnails]
+        end
+
+        Client -->|All Requests| Gateway
+        Gateway -->|JWT Auth| Auth
+        Gateway -->|Checksum Validation<br/>Asset CRUD| Asset
+        Gateway -->|TUS Upload| AssetV2
+        Gateway -->|Photos/Memories/Albums| Album
+        Gateway -->|Search Queries| Search
+
+        Auth -.->|Read/Write| Postgres
+
+        Asset -.->|Read/Write| Postgres
+        Asset -->|Enqueue Jobs:<br/>• thumbnail_generation<br/>• metadata_extraction<br/>• video_transcode| Redis
+        Asset -.->|Fetch Assets| FileStore
+
+        AssetV2 -.->|Read/Write| Postgres
+        AssetV2 -->|Enqueue Jobs| Redis
+        AssetV2 -.->|Store Assets| FileStore
+
+        Album -.->|Read| Postgres
+        Search -.->|Read| Postgres
+
+        Redis -->|Poll Every 100ms| ImgProc
+        Redis -->|Poll Every 100ms| VidProc
+
+        ImgProc -.->|Read/Write Metadata| Postgres
+        ImgProc -.->|Store Thumbnails| FileStore
+        ImgProc -->|Failed Jobs| DLQ
+        ImgProc -->|Success/Failure| Redis
+
+        VidProc -.->|Read/Write| Postgres
+        VidProc -.->|Store Transcoded Video| FileStore
+        VidProc -->|Failed Jobs| DLQ
+        VidProc -->|Success/Failure| Redis
+
+        style Gateway fill:#ff9999
+        style Auth fill:#99ccff
+        style Asset fill:#99ccff
+        style AssetV2 fill:#99ccff
+        style Album fill:#99ccff
+        style Search fill:#99ccff
+        style ImgProc fill:#99ff99
+        style VidProc fill:#99ff99
+        style Postgres fill:#ffcc99
+        style Redis fill:#ffcc99
+        style DLQ fill:#ff99ff
+    </div>
+</div>
+
+<div class="content">
+    <h2>Architecture Components</h2>
+
+    <h3>1. Gateway-Service (Entry Point)</h3>
+    <ul>
+        <li><strong>Role</strong>: API Gateway & Authentication</li>
+        <li><strong>Responsibilities</strong>:
+            <ul>
+                <li>Route requests to appropriate microservices</li>
+                <li>JWT authentication and validation</li>
+                <li>Decode JWT and inject <code>X-User-Id</code> header</li>
+                <li>Centralized auth to avoid JWT decoding in all services</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>2. Auth-Service</h3>
+    <ul>
+        <li><strong>Role</strong>: Authentication & Authorization</li>
+        <li><strong>APIs</strong>: Login/Signup, PIN create/update, Folder lock/unlock</li>
+        <li><strong>Database</strong>: PostgreSQL</li>
+    </ul>
+
+    <h3>3. Asset-Service</h3>
+    <ul>
+        <li><strong>Role</strong>: Asset Management (Traditional Upload)</li>
+        <li><strong>APIs</strong>: Bulk checksum validation, Asset upload/update/delete, Asset retrieval</li>
+        <li><strong>Job Queue</strong>: Publishes to Redis:
+            <ul>
+                <li><code>asset_id, thumbnail_generation</code></li>
+                <li><code>asset_id, metadata_extraction</code></li>
+                <li><code>asset_id, video_transcode</code></li>
+            </ul>
+        </li>
+        <li><strong>Database</strong>: PostgreSQL</li>
+        <li><strong>Cache/Queue</strong>: Redis</li>
+    </ul>
+
+    <h3>4. Asset-Service-v2</h3>
+    <ul>
+        <li><strong>Role</strong>: Resumable Upload</li>
+        <li><strong>Protocol</strong>: TUS resumable upload protocol</li>
+        <li><strong>Job Queue</strong>: Publishes to Redis after upload completion</li>
+        <li><strong>Database</strong>: PostgreSQL</li>
+        <li><strong>Cache/Queue</strong>: Redis</li>
+    </ul>
+
+    <h3>5. Image-Processor (Background Workers)</h3>
+    <ul>
+        <li><strong>Workers</strong>:
+            <ol>
+                <li><strong>Metadata Extraction</strong> (100ms polling) - Extracts duration, size, date, etc.</li>
+                <li><strong>Thumbnail Generation</strong> (100ms polling) - HEIC → JPG conversion (ImageMagick), JPG → Thumbnail (Thumbnailator)</li>
+                <li><strong>Memory Processor</strong> (Daily at 12 AM) - Identifies assets from 1, 2, 5 years ago</li>
+            </ol>
+        </li>
+        <li><strong>Retry</strong>: 3 attempts → Dead Letter Queue</li>
+        <li><strong>Database</strong>: PostgreSQL</li>
+        <li><strong>Cache/Queue</strong>: Redis</li>
+    </ul>
+
+    <h3>6. Video-Processor (Background Worker)</h3>
+    <ul>
+        <li><strong>Worker</strong>: Video Transcoding (100ms polling)</li>
+        <li><strong>Processing</strong>: FFMPEG conversion to 480p</li>
+        <li><strong>Retry</strong>: 3 attempts → Dead Letter Queue</li>
+        <li><strong>Database</strong>: PostgreSQL</li>
+        <li><strong>Cache/Queue</strong>: Redis</li>
+    </ul>
+
+    <h3>7. Album-Timeline-Service</h3>
+    <ul>
+        <li><strong>Role</strong>: Photo Organization & Memories</li>
+        <li><strong>APIs</strong>: Get buckets (photo timeline), Get bucket details, Memories retrieval, Album management</li>
+        <li><strong>Database</strong>: PostgreSQL</li>
+    </ul>
+
+    <h3>8. Search-Service</h3>
+    <ul>
+        <li><strong>Role</strong>: Search & Discovery</li>
+        <li><strong>APIs</strong>: Asset search by ID, City search for users</li>
+        <li><strong>Database</strong>: PostgreSQL</li>
+    </ul>
+
+    <h2>Key Design Patterns</h2>
+
+    <h3>Authentication Flow</h3>
+    <pre>Client → Gateway (JWT Decode) → Gateway adds X-User-Id header → Service (Header Validation)</pre>
+
+    <h3>Asset Upload Flow (Checksum)</h3>
+    <pre>1. Client sends checksum → Asset Service checks DB
+2. If exists → Reject
+3. If new → Accept → Client uploads actual asset
+4. Asset Service → Redis queue (thumbnail, metadata, transcode jobs)</pre>
+
+    <h3>Background Processing</h3>
+    <pre>Redis Queue ← Services publish jobs
+    ↓ (100ms polling)
+Workers consume → Process → 3 retries → Success/DLQ</pre>
+
+    <h2>Technology Stack</h2>
+    <ul>
+        <li><strong>Framework</strong>: Spring Boot 3.3.4</li>
+        <li><strong>Language</strong>: Java 21</li>
+        <li><strong>Database</strong>: PostgreSQL</li>
+        <li><strong>Cache/Queue</strong>: Redis</li>
+        <li><strong>Image Processing</strong>: Thumbnailator, ImageMagick</li>
+        <li><strong>Video Processing</strong>: FFMPEG</li>
+        <li><strong>Upload Protocol</strong>: TUS (resumable)</li>
+        <li><strong>Authentication</strong>: JWT</li>
+    </ul>
+
+    <h2>Fault Tolerance</h2>
+    <ul>
+        <li><strong>Retry Mechanism</strong>: 3 attempts for all background jobs</li>
+        <li><strong>Dead Letter Queue</strong>: Failed jobs after 3 retries</li>
+        <li><strong>Worker Polling</strong>: 100ms interval for job processing</li>
+        <li><strong>Scheduled Jobs</strong>: Memory processor runs daily at 12 AM</li>
+    </ul>
+</div>
+
+<script>
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'default',
+        flowchart: {
+            useMaxWidth: true,
+            htmlLabels: true,
+            curve: 'basis'
+        }
+    });
+</script>
+</body>
+</html>
