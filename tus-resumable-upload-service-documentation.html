@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUS Resumable Upload Service - Technical Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.8em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.3em;
+        }
+
+        h2 {
+            color: #764ba2;
+            margin-top: 50px;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 4px solid #667eea;
+            font-size: 2em;
+        }
+
+        h3 {
+            color: #667eea;
+            margin-top: 35px;
+            margin-bottom: 18px;
+            font-size: 1.5em;
+        }
+
+        h4 {
+            color: #764ba2;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .architecture-diagram {
+            margin: 40px 0;
+            padding: 35px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            border: 3px solid #667eea;
+        }
+
+        .diagram-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.4em;
+            color: #764ba2;
+            margin-bottom: 35px;
+        }
+
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .flow-box {
+            background: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            font-weight: 600;
+            min-width: 350px;
+        }
+
+        .flow-box.client {
+            background: #4CAF50;
+            color: white;
+            border-color: #45a049;
+        }
+
+        .flow-box.tus {
+            background: #FF9800;
+            color: white;
+            border-color: #e68900;
+        }
+
+        .flow-box.storage {
+            background: #2196F3;
+            color: white;
+            border-color: #0b7dda;
+        }
+
+        .flow-box.complete {
+            background: #9C27B0;
+            color: white;
+            border-color: #7B1FA2;
+        }
+
+        .flow-box.async {
+            background: #607D8B;
+            color: white;
+            border-color: #455A64;
+        }
+
+        .arrow {
+            font-size: 28px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .endpoints-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            font-size: 0.95em;
+        }
+
+        .endpoints-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .endpoints-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .endpoints-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .endpoints-table tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        .method {
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 5px;
+            display: inline-block;
+            font-size: 0.85em;
+        }
+
+        .method.options { background: #9E9E9E; color: white; }
+        .method.post { background: #4CAF50; color: white; }
+        .method.head { background: #2196F3; color: white; }
+        .method.patch { background: #FF9800; color: white; }
+        .method.delete { background: #f44336; color: white; }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 14px;
+            margin: 12px 0;
+            background: #f5f7fa;
+            border-left: 5px solid #667eea;
+            border-radius: 5px;
+        }
+
+        .feature-list li:before {
+            content: "✓ ";
+            color: #4CAF50;
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 1.2em;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .tech-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            font-size: 0.95em;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+            font-size: 0.9em;
+        }
+
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            border-left: 5px solid #667eea;
+        }
+
+        .code-block .keyword { color: #c678dd; }
+        .code-block .string { color: #98c379; }
+        .code-block .number { color: #d19a66; }
+        .code-block .comment { color: #5c6370; font-style: italic; }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 5px solid #2196F3;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 5px solid #4CAF50;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+        .entity-card {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .entity-card h4 {
+            margin-top: 0;
+            color: #764ba2;
+        }
+
+        .field-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .field-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .field-name {
+            font-weight: bold;
+            color: #667eea;
+            display: inline-block;
+            min-width: 180px;
+        }
+
+        .field-type {
+            color: #666;
+            font-family: monospace;
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .sequence-diagram {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border: 2px solid #667eea;
+        }
+
+        .sequence-step {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f5f7fa;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+        }
+
+        .sequence-step strong {
+            color: #764ba2;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .flow-box {
+                min-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TUS Resumable Upload Service</h1>
+        <p class="subtitle">Complete Technical Documentation & Architecture Guide</p>
+
+        <div class="architecture-diagram">
+            <div class="diagram-title">TUS Resumable Upload Flow</div>
+            <div class="flow-diagram">
+                <div class="flow-box client">Client Initiates Upload<br>(POST /api/v1/files)</div>
+                <div class="arrow">↓</div>
+                <div class="flow-box tus">TUS Server Creates Upload Record<br>Returns Location Header</div>
+                <div class="arrow">↓</div>
+                <div class="flow-box storage">Client Uploads Chunks<br>(PATCH /api/v1/files/{id})</div>
+                <div class="arrow">↓</div>
+                <div class="flow-box tus">Server Validates Offset<br>Writes to Temp File</div>
+                <div class="arrow">↓</div>
+                <div class="flow-box storage">Upload Progress Tracked<br>(HEAD /api/v1/files/{id})</div>
+                <div class="arrow">↓</div>
+                <div class="flow-box complete">Upload Complete<br>Calculate Checksum</div>
+                <div class="arrow">↓</div>
+                <div class="flow-box complete">Move to Final Storage<br>Create Asset Record</div>
+                <div class="arrow">↓</div>
+                <div class="flow-box async">Queue Async Jobs<br>(Transcode, Thumbnails, S3 Sync)</div>
+                <div class="arrow">↓</div>
+                <div class="flow-box client">Client Receives Success Response</div>
+            </div>
+        </div>
+
+        <h2>📋 Overview</h2>
+        <p>The TUS Resumable Upload Service is a production-ready implementation of the TUS protocol (v1.0.0) for handling large file uploads with resume capability. Built on Spring Boot 3.3.4 and Java 21, it provides a robust solution for managing photo and video uploads with automatic chunking, offset tracking, and recovery from network interruptions.</p>
+
+        <div class="info-box">
+            <strong>Key Features:</strong>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li>Full TUS 1.0.0 protocol compliance</li>
+                <li>Resumable uploads with offset tracking</li>
+                <li>SHA-1 checksum verification</li>
+                <li>Automatic file type detection</li>
+                <li>Async job queuing (transcoding, thumbnails, metadata)</li>
+                <li>PostgreSQL persistence with JPA</li>
+                <li>Redis-based job queue integration</li>
+                <li>User quota management</li>
+                <li>Multi-environment configuration</li>
+            </ul>
+        </div>
+
+        <h2>🌐 TUS Protocol Endpoints</h2>
+
+        <table class="endpoints-table">
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Purpose</th>
+                    <th>Key Headers</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="method options">OPTIONS</span></td>
+                    <td><code>/api/v1/files</code><br><code>/api/v1/files/{id}</code></td>
+                    <td>Protocol negotiation and feature discovery</td>
+                    <td><code>Tus-Resumable</code>, <code>Tus-Version</code>, <code>Tus-Extension</code></td>
+                </tr>
+                <tr>
+                    <td><span class="method post">POST</span></td>
+                    <td><code>/api/v1/files</code></td>
+                    <td>Create new upload session</td>
+                    <td><code>Upload-Length</code>, <code>Upload-Metadata</code>, <code>Tus-Resumable</code></td>
+                </tr>
+                <tr>
+                    <td><span class="method head">HEAD</span></td>
+                    <td><code>/api/v1/files/{id}</code></td>
+                    <td>Check upload progress and resume point</td>
+                    <td><code>Upload-Offset</code>, <code>Upload-Length</code>, <code>Tus-Resumable</code></td>
+                </tr>
+                <tr>
+                    <td><span class="method patch">PATCH</span></td>
+                    <td><code>/api/v1/files/{id}</code></td>
+                    <td>Append chunk data to upload</td>
+                    <td><code>Upload-Offset</code>, <code>Content-Type: application/offset+octet-stream</code></td>
+                </tr>
+                <tr>
+                    <td><span class="method delete">DELETE</span></td>
+                    <td><code>/api/v1/files/{id}</code></td>
+                    <td>Cancel and terminate upload</td>
+                    <td><code>Tus-Resumable</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>🏗️ Architecture Components</h2>
+
+        <h3>1. TUS Controller</h3>
+        <p><strong>File:</strong> <code>com.leo.server.asset.v2.controller.TusController</code></p>
+
+        <div class="info-box">
+            <strong>Responsibilities:</strong>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li>HTTP endpoint implementation for TUS protocol</li>
+                <li>Request validation and header parsing</li>
+                <li>TUS version compatibility checking (412 response on mismatch)</li>
+                <li>Location header generation for created uploads</li>
+                <li>Stream-based chunk processing</li>
+            </ul>
+        </div>
+
+        <h4>Key Methods:</h4>
+
+        <div class="code-block">
+<span class="keyword">@PostMapping</span>
+<span class="keyword">public</span> ResponseEntity&lt;Void&gt; <span class="keyword">create</span>(HttpServletRequest req)
+    <span class="comment">// Creates upload record, returns Location header with TUS ID</span>
+
+<span class="keyword">@PatchMapping</span>
+<span class="keyword">public</span> ResponseEntity&lt;Void&gt; <span class="keyword">patch</span>(<span class="keyword">@PathVariable</span> String id, HttpServletRequest req)
+    <span class="comment">// Appends chunk data, validates offset, returns updated offset</span>
+
+<span class="keyword">@RequestMapping</span>(method = RequestMethod.HEAD)
+<span class="keyword">public</span> ResponseEntity&lt;Void&gt; <span class="keyword">head</span>(<span class="keyword">@PathVariable</span> String id)
+    <span class="comment">// Returns current upload offset and total length</span>
+
+<span class="keyword">@DeleteMapping</span>
+<span class="keyword">public</span> ResponseEntity&lt;Void&gt; <span class="keyword">delete</span>(<span class="keyword">@PathVariable</span> String id)
+    <span class="comment">// Cancels upload and cleans up temp file</span>
+        </div>
+
+        <h3>2. TUS Service</h3>
+        <p><strong>File:</strong> <code>com.leo.server.asset.v2.service.TusService</code></p>
+
+        <div class="sequence-diagram">
+            <h4>Upload Processing Sequence:</h4>
+            <div class="sequence-step">
+                <strong>Step 1: Create Upload</strong>
+                Generate UUID-based TUS ID → Parse Upload-Length and Upload-Metadata headers → Create temp file → Save V2TusUpload record to DB → Return TUS ID
+            </div>
+            <div class="sequence-step">
+                <strong>Step 2: Append Chunks</strong>
+                Validate TUS ID exists → Check offset matches server state → Open FileChannel at current offset → Stream chunk data (128KB buffer) → Update offset in-memory → Save progress or trigger completion
+            </div>
+            <div class="sequence-step">
+                <strong>Step 3: Process Completion</strong>
+                Calculate SHA-1 checksum → Begin transaction → Create Asset entity → Update user quota → Upsert EXIF record → Move file to final location → Update TUS status to COMPLETED → Commit transaction
+            </div>
+            <div class="sequence-step">
+                <strong>Step 4: Queue Async Jobs</strong>
+                Push to Redis queues: video-transcode-queue (videos only), thumbnail-queue, metadata-queue, s3-sync-queue
+            </div>
+        </div>
+
+        <h4>Critical Design Decisions:</h4>
+
+        <ul class="feature-list">
+            <li><strong>Non-Transactional Append:</strong> File I/O happens outside transaction to avoid lock contention and enable streaming</li>
+            <li><strong>Offset Validation:</strong> Server validates client offset matches stored offset before writing (prevents data corruption)</li>
+            <li><strong>In-Memory Progress:</strong> Offset updated in memory during append, persisted only after chunk completes</li>
+            <li><strong>Atomic Completion:</strong> All database writes (Asset, User quota, EXIF) happen in single transaction after file operations</li>
+            <li><strong>Async Job Queuing:</strong> Redis queues used for post-upload processing (outside transaction to prevent delays)</li>
+            <li><strong>Checksum Verification:</strong> SHA-1 calculated on complete file to detect corruption</li>
+        </ul>
+
+        <h3>3. V2TusUpload Entity</h3>
+        <p><strong>File:</strong> <code>com.leo.server.asset.v2.entity.V2TusUpload</code></p>
+        <p><strong>Table:</strong> <code>v2_tus_uploads</code></p>
+
+        <div class="entity-card">
+            <h4>Database Schema</h4>
+            <ul class="field-list">
+                <li><span class="field-name">id</span> <span class="field-type">UUID (PK)</span> - Internal database identifier</li>
+                <li><span class="field-name">tusId</span> <span class="field-type">String (Unique)</span> - TUS protocol identifier</li>
+                <li><span class="field-name">uploadLength</span> <span class="field-type">Long</span> - Total file size in bytes</li>
+                <li><span class="field-name">uploadOffset</span> <span class="field-type">Long (default 0)</span> - Bytes received so far</li>
+                <li><span class="field-name">metadata</span> <span class="field-type">String</span> - Raw base64-encoded metadata</li>
+                <li><span class="field-name">filename</span> <span class="field-type">String</span> - Original filename</li>
+                <li><span class="field-name">filetype</span> <span class="field-type">String</span> - MIME type</li>
+                <li><span class="field-name">tempPath</span> <span class="field-type">String</span> - Path to temporary upload file</li>
+                <li><span class="field-name">finalPath</span> <span class="field-type">String</span> - Path to final storage location</li>
+                <li><span class="field-name">status</span> <span class="field-type">Enum</span> - PENDING, IN_PROGRESS, COMPLETED, CANCELLED, FAILED</li>
+                <li><span class="field-name">createdAt</span> <span class="field-type">Instant</span> - Upload creation timestamp</li>
+                <li><span class="field-name">updatedAt</span> <span class="field-type">Instant</span> - Last update timestamp</li>
+            </ul>
+        </div>
+
+        <h3>4. Metadata Parsing</h3>
+
+        <p>TUS metadata is transmitted as base64-encoded key-value pairs in the <code>Upload-Metadata</code> header:</p>
+
+        <div class="code-block">
+<span class="comment">// Format: key1 base64Value1,key2 base64Value2</span>
+<span class="string">"filename ZmlsZS5qcGc=,filetype aW1hZ2UvanBlZw=="</span>
+        </div>
+
+        <h4>Expected Metadata Keys:</h4>
+
+        <table class="endpoints-table">
+            <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Type</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>filename</code></td>
+                    <td>String</td>
+                    <td>Original filename</td>
+                </tr>
+                <tr>
+                    <td><code>filetype</code></td>
+                    <td>String</td>
+                    <td>MIME type (e.g., image/jpeg, video/mp4)</td>
+                </tr>
+                <tr>
+                    <td><code>deviceAssetId</code></td>
+                    <td>String</td>
+                    <td>Unique identifier from client device</td>
+                </tr>
+                <tr>
+                    <td><code>deviceId</code></td>
+                    <td>String</td>
+                    <td>Client device identifier</td>
+                </tr>
+                <tr>
+                    <td><code>fileCreatedAt</code></td>
+                    <td>ISO 8601</td>
+                    <td>Original file creation timestamp</td>
+                </tr>
+                <tr>
+                    <td><code>fileModifiedAt</code></td>
+                    <td>ISO 8601</td>
+                    <td>Original file modification timestamp</td>
+                </tr>
+                <tr>
+                    <td><code>isFavorite</code></td>
+                    <td>Boolean</td>
+                    <td>Favorite flag</td>
+                </tr>
+                <tr>
+                    <td><code>duration</code></td>
+                    <td>String</td>
+                    <td>Video duration (for video files)</td>
+                </tr>
+                <tr>
+                    <td><code>visibility</code></td>
+                    <td>Enum</td>
+                    <td>Asset visibility level (TIMELINE, PRIVATE, etc.)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>🗄️ Data Model</h2>
+
+        <h3>Related Entities (from leo-common-service)</h3>
+
+        <div class="entity-card">
+            <h4>Asset</h4>
+            <p>Primary asset metadata entity with file information, owner reference, and derivative tracking.</p>
+            <ul class="field-list">
+                <li><span class="field-name">id</span> <span class="field-type">UUID (PK)</span> - Derived from TUS ID</li>
+                <li><span class="field-name">owner</span> <span class="field-type">User (FK)</span> - Asset owner reference</li>
+                <li><span class="field-name">type</span> <span class="field-type">AssetType Enum</span> - IMAGE, VIDEO, AUDIO, DOCUMENT, OTHER</li>
+                <li><span class="field-name">originalPath</span> <span class="field-type">String</span> - File system path</li>
+                <li><span class="field-name">checksum</span> <span class="field-type">byte[20]</span> - SHA-1 hash</li>
+                <li><span class="field-name">fileCreatedAt</span> <span class="field-type">OffsetDateTime</span> - Original creation time</li>
+                <li><span class="field-name">derivativesPending</span> <span class="field-type">Integer</span> - Count of pending derivative jobs</li>
+                <li><span class="field-name">derivativesCompleted</span> <span class="field-type">Integer</span> - Count of completed derivatives</li>
+            </ul>
+        </div>
+
+        <div class="entity-card">
+            <h4>User</h4>
+            <p>User entity with quota tracking.</p>
+            <ul class="field-list">
+                <li><span class="field-name">id</span> <span class="field-type">UUID (PK)</span> - User identifier</li>
+                <li><span class="field-name">email</span> <span class="field-type">String (Unique)</span> - User email</li>
+                <li><span class="field-name">quotaSizeInBytes</span> <span class="field-type">Long</span> - Total quota limit</li>
+                <li><span class="field-name">quotaUsageInBytes</span> <span class="field-type">Long</span> - Current usage</li>
+            </ul>
+        </div>
+
+        <div class="entity-card">
+            <h4>AssetExif</h4>
+            <p>EXIF metadata storage (one-to-one with Asset).</p>
+            <ul class="field-list">
+                <li><span class="field-name">assetId</span> <span class="field-type">UUID (PK, FK)</span> - References Asset.id</li>
+                <li><span class="field-name">fileSizeInByte</span> <span class="field-type">Long</span> - File size</li>
+                <li><span class="field-name">Additional fields...</span> <span class="field-type">Various</span> - Camera info, GPS, exposure data</li>
+            </ul>
+        </div>
+
+        <h2>⚙️ Technology Stack</h2>
+
+        <div class="tech-stack">
+            <div class="tech-badge">Java 21</div>
+            <div class="tech-badge">Spring Boot 3.3.4</div>
+            <div class="tech-badge">Spring Data JPA</div>
+            <div class="tech-badge">Spring Web</div>
+            <div class="tech-badge">PostgreSQL 12+</div>
+            <div class="tech-badge">Redis 6.0+</div>
+            <div class="tech-badge">TUS Protocol 1.0.0</div>
+            <div class="tech-badge">Lombok</div>
+            <div class="tech-badge">Hibernate</div>
+            <div class="tech-badge">Maven</div>
+            <div class="tech-badge">Docker</div>
+        </div>
+
+        <h2>🔧 Configuration</h2>
+
+        <h3>Application Properties</h3>
+
+        <div class="code-block">
+<span class="comment"># Server Configuration</span>
+server.port=<span class="number">8091</span>
+
+<span class="comment"># Database (PostgreSQL)</span>
+spring.datasource.url=<span class="string">jdbc:postgresql://localhost:5432/leo</span>
+spring.datasource.username=<span class="string">leo</span>
+spring.datasource.password=<span class="string">leo</span>
+
+<span class="comment"># JPA/Hibernate</span>
+spring.jpa.hibernate.ddl-auto=<span class="string">update</span>
+spring.jpa.open-in-view=<span class="keyword">false</span>
+
+<span class="comment"># Redis</span>
+spring.data.redis.host=<span class="string">localhost</span>
+spring.data.redis.port=<span class="number">6379</span>
+
+<span class="comment"># Storage Paths</span>
+app.storage.temp-dir=<span class="string">/path/to/uploads/tmp</span>
+app.storage.final-dir=<span class="string">/path/to/uploads/final</span>
+
+<span class="comment"># TUS Configuration</span>
+app.tus.version=<span class="string">1.0.0</span>
+
+<span class="comment"># Multipart Disabled (streaming mode)</span>
+spring.servlet.multipart.enabled=<span class="keyword">false</span>
+        </div>
+
+        <h3>Environment Profiles</h3>
+
+        <ul class="feature-list">
+            <li><strong>local:</strong> Development environment with localhost services</li>
+            <li><strong>docker-local:</strong> Docker Desktop environment using host.docker.internal</li>
+            <li><strong>docker-deployment:</strong> Production Kubernetes environment with service names</li>
+        </ul>
+
+        <h2>📊 Upload Flow Details</h2>
+
+        <h3>Client Upload Sequence</h3>
+
+        <div class="sequence-diagram">
+            <div class="sequence-step">
+                <strong>1. Protocol Negotiation (Optional)</strong>
+                Client sends <code>OPTIONS /api/v1/files</code> to discover server capabilities.
+                Server responds with <code>Tus-Resumable</code>, <code>Tus-Version</code>, <code>Tus-Extension</code> headers.
+            </div>
+
+            <div class="sequence-step">
+                <strong>2. Upload Creation</strong>
+                Client sends <code>POST /api/v1/files</code> with:
+                <ul style="margin-top: 8px; margin-left: 20px;">
+                    <li><code>Upload-Length: 10485760</code> (file size in bytes)</li>
+                    <li><code>Upload-Metadata: filename ZmlsZS5qcGc=,filetype aW1hZ2UvanBlZw==</code></li>
+                    <li><code>Tus-Resumable: 1.0.0</code></li>
+                </ul>
+                Server responds with <code>201 Created</code> and <code>Location: /api/v1/files/{tusId}</code>
+            </div>
+
+            <div class="sequence-step">
+                <strong>3. Chunk Upload (Repeatable)</strong>
+                Client sends <code>PATCH /api/v1/files/{tusId}</code> with:
+                <ul style="margin-top: 8px; margin-left: 20px;">
+                    <li><code>Upload-Offset: 0</code> (starting byte position)</li>
+                    <li><code>Content-Type: application/offset+octet-stream</code></li>
+                    <li><code>Tus-Resumable: 1.0.0</code></li>
+                    <li>Request body: raw binary chunk data</li>
+                </ul>
+                Server responds with <code>204 No Content</code> and updated <code>Upload-Offset</code> header.
+            </div>
+
+            <div class="sequence-step">
+                <strong>4. Resume After Interruption</strong>
+                Client sends <code>HEAD /api/v1/files/{tusId}</code> to get current offset.
+                Server responds with <code>Upload-Offset</code> and <code>Upload-Length</code> headers.
+                Client resumes from returned offset.
+            </div>
+
+            <div class="sequence-step">
+                <strong>5. Upload Completion</strong>
+                When final chunk is uploaded (offset equals length):
+                <ul style="margin-top: 8px; margin-left: 20px;">
+                    <li>Server calculates SHA-1 checksum</li>
+                    <li>Creates Asset record in database</li>
+                    <li>Moves file to final storage location</li>
+                    <li>Updates user quota</li>
+                    <li>Creates EXIF record</li>
+                    <li>Queues async jobs for processing</li>
+                    <li>Returns <code>204 No Content</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>🚀 Async Job Processing</h2>
+
+        <p>After upload completion, the following jobs are queued to Redis:</p>
+
+        <table class="endpoints-table">
+            <thead>
+                <tr>
+                    <th>Queue Name</th>
+                    <th>Purpose</th>
+                    <th>Asset Types</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>video-transcode-queue</code></td>
+                    <td>Transcode video to web-friendly formats (H.264/AAC)</td>
+                    <td>VIDEO only</td>
+                </tr>
+                <tr>
+                    <td><code>thumbnail-queue</code></td>
+                    <td>Generate thumbnail image</td>
+                    <td>All types</td>
+                </tr>
+                <tr>
+                    <td><code>metadata-queue</code></td>
+                    <td>Extract EXIF, GPS, camera info</td>
+                    <td>All types</td>
+                </tr>
+                <tr>
+                    <td><code>s3-sync-queue</code></td>
+                    <td>Upload original file to S3 storage</td>
+                    <td>All types</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>🔐 Security Considerations</h2>
+
+        <ul class="feature-list">
+            <li><strong>User Authentication:</strong> <code>X-User-Id</code> header required (injected by API Gateway)</li>
+            <li><strong>Offset Validation:</strong> Prevents data corruption by validating client offset matches server state</li>
+            <li><strong>TUS Version Check:</strong> Returns HTTP 412 if client/server versions mismatch</li>
+            <li><strong>Quota Enforcement:</strong> User quota updated on upload completion</li>
+            <li><strong>Checksum Verification:</strong> SHA-1 hash calculated to detect file corruption</li>
+            <li><strong>Temporary File Isolation:</strong> Uploads stored in temp directory until verified and complete</li>
+            <li><strong>Transaction Safety:</strong> All database writes in single atomic transaction</li>
+        </ul>
+
+        <h2>📈 Performance Optimizations</h2>
+
+        <ul class="feature-list">
+            <li><strong>Streaming I/O:</strong> Uses FileChannel and 128KB buffers for efficient chunk processing</li>
+            <li><strong>Non-Blocking Append:</strong> File writes happen outside database transaction to avoid lock contention</li>
+            <li><strong>Atomic Completion:</strong> All database writes grouped into single fast transaction after slow I/O completes</li>
+            <li><strong>Async Job Queuing:</strong> Post-processing happens asynchronously via Redis queues</li>
+            <li><strong>Multipart Disabled:</strong> Spring multipart parsing disabled to enable true streaming</li>
+            <li><strong>Connection Pooling:</strong> HikariCP with 50 max connections</li>
+            <li><strong>Virtual Threads:</strong> Java 21 virtual threads enabled for high concurrency</li>
+        </ul>
+
+        <h2>🛠️ Running the Service</h2>
+
+        <h3>Prerequisites</h3>
+
+        <ul class="feature-list">
+            <li>Java 21 JDK installed</li>
+            <li>PostgreSQL 12+ running</li>
+            <li>Redis 6.0+ running</li>
+            <li>Maven 3.9+ installed</li>
+        </ul>
+
+        <h3>Local Development</h3>
+
+        <div class="code-block">
+<span class="comment"># 1. Start PostgreSQL and Redis</span>
+docker run -d --name postgres -p 5432:5432 -e POSTGRES_DB=leo -e POSTGRES_USER=leo -e POSTGRES_PASSWORD=leo postgres:15
+docker run -d --name redis -p 6379:6379 redis:7
+
+<span class="comment"># 2. Create upload directories</span>
+mkdir -p /path/to/uploads/tmp
+mkdir -p /path/to/uploads/final
+
+<span class="comment"># 3. Build and run service</span>
+cd tus-resumable-upload-service
+mvn clean install -DskipTests
+mvn spring-boot:run
+
+<span class="comment"># Service will start on port 8091</span>
+        </div>
+
+        <h3>Docker Deployment</h3>
+
+        <div class="code-block">
+<span class="comment"># Build Docker image</span>
+docker build -t tus-upload-service:latest .
+
+<span class="comment"># Run with environment variables</span>
+docker run -d \
+  --name tus-upload \
+  -p 8091:8080 \
+  -e SPRING_PROFILES_ACTIVE=docker-deployment \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/leo \
+  -v /data/uploads:/usr/src/app/upload/leo \
+  tus-upload-service:latest
+        </div>
+
+        <h2>📝 Example Client Implementation</h2>
+
+        <div class="code-block">
+<span class="comment">// JavaScript TUS client example using tus-js-client</span>
+<span class="keyword">import</span> * <span class="keyword">as</span> tus <span class="keyword">from</span> <span class="string">"tus-js-client"</span>;
+
+<span class="keyword">const</span> file = document.querySelector(<span class="string">"input[type=file]"</span>).files[<span class="number">0</span>];
+
+<span class="keyword">const</span> upload = <span class="keyword">new</span> tus.Upload(file, {
+  endpoint: <span class="string">"http://localhost:8091/api/v1/files"</span>,
+  retryDelays: [<span class="number">0</span>, <span class="number">1000</span>, <span class="number">3000</span>, <span class="number">5000</span>],
+  metadata: {
+    filename: file.name,
+    filetype: file.type,
+    deviceAssetId: <span class="string">"device-123-asset-456"</span>,
+    deviceId: <span class="string">"mobile-device-xyz"</span>,
+    fileCreatedAt: <span class="keyword">new</span> Date().toISOString(),
+    fileModifiedAt: <span class="keyword">new</span> Date(file.lastModified).toISOString(),
+    isFavorite: <span class="string">"false"</span>,
+    visibility: <span class="string">"TIMELINE"</span>
+  },
+  headers: {
+    <span class="string">"X-User-Id"</span>: <span class="string">"user-uuid-here"</span>
+  },
+  onError: <span class="keyword">function</span>(error) {
+    console.error(<span class="string">"Upload failed:"</span>, error);
+  },
+  onProgress: <span class="keyword">function</span>(bytesUploaded, bytesTotal) {
+    <span class="keyword">const</span> percentage = ((bytesUploaded / bytesTotal) * <span class="number">100</span>).toFixed(<span class="number">2</span>);
+    console.log(<span class="string">`Progress: ${percentage}%`</span>);
+  },
+  onSuccess: <span class="keyword">function</span>() {
+    console.log(<span class="string">"Upload completed successfully!"</span>);
+  }
+});
+
+upload.start();
+        </div>
+
+        <h2>🐛 Troubleshooting</h2>
+
+        <div class="warning-box">
+            <strong>Common Issues:</strong>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li><strong>412 Precondition Failed:</strong> TUS version mismatch - ensure client sends <code>Tus-Resumable: 1.0.0</code></li>
+                <li><strong>Offset Mismatch Error:</strong> Client offset doesn't match server - use HEAD request to get current offset</li>
+                <li><strong>Upload Not Found:</strong> TUS ID invalid or expired - restart upload with POST request</li>
+                <li><strong>File Permission Errors:</strong> Ensure upload directories exist and are writable</li>
+                <li><strong>Database Connection Issues:</strong> Check PostgreSQL credentials and connection string</li>
+                <li><strong>Redis Connection Timeout:</strong> Verify Redis is running and accessible</li>
+            </ul>
+        </div>
+
+        <h2>📚 Additional Resources</h2>
+
+        <ul class="feature-list">
+            <li><strong>TUS Protocol Specification:</strong> <a href="https://tus.io/protocols/resumable-upload.html" target="_blank">https://tus.io/protocols/resumable-upload.html</a></li>
+            <li><strong>TUS Client Libraries:</strong> Available for JavaScript, Java, Python, Go, Swift, etc.</li>
+            <li><strong>Spring Boot Documentation:</strong> <a href="https://spring.io/projects/spring-boot" target="_blank">https://spring.io/projects/spring-boot</a></li>
+            <li><strong>Spring Data JPA:</strong> <a href="https://spring.io/projects/spring-data-jpa" target="_blank">https://spring.io/projects/spring-data-jpa</a></li>
+        </ul>
+
+        <h2>📊 Monitoring & Metrics</h2>
+
+        <p>The service exposes Spring Boot Actuator endpoints for monitoring:</p>
+
+        <table class="endpoints-table">
+            <thead>
+                <tr>
+                    <th>Endpoint</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>/actuator/health</code></td>
+                    <td>Service health check</td>
+                </tr>
+                <tr>
+                    <td><code>/actuator/info</code></td>
+                    <td>Application information</td>
+                </tr>
+                <tr>
+                    <td><code>/actuator/metrics</code></td>
+                    <td>Performance metrics</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="success-box" style="margin-top: 50px;">
+            <strong>Documentation Version:</strong> 1.0<br>
+            <strong>Last Updated:</strong> November 2024<br>
+            <strong>TUS Protocol Version:</strong> 1.0.0<br>
+            <strong>Spring Boot Version:</strong> 3.3.4<br>
+            <strong>Java Version:</strong> 21<br>
+            <strong>Service Port:</strong> 8091
+        </div>
+    </div>
+</body>
+</html>
