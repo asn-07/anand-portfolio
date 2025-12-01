@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anand Namastemath · Senior Software Engineer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #f8f9fa;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --accent-dark: #4f46e5;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4b5563;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            --section-spacing: 140px;
+            --container-width: 1200px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 25px rgba(0,0,0,0.05);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.08);
+            --shadow-xl: 0 30px 80px rgba(0,0,0,0.1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-primary);
+            background: var(--secondary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Smooth Scrolling Container */
+        .smooth-wrapper {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .smooth-wrapper.loaded {
+            opacity: 1;
+        }
+
+        /* Navigation */
+        .navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 30px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: transparent;
+            transition: var(--transition);
+        }
+
+        .navigation.scrolled {
+            padding: 20px 50px;
+            background: rgba(248, 249, 250, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            position: relative;
+            letter-spacing: -0.5px;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        .logo:hover::after {
+            width: 100%;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            position: relative;
+            transition: var(--transition);
+            padding: 8px 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-primary);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn-resume {
+            padding: 10px 24px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-resume:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .menu-toggle {
+            display: none;
+            width: 30px;
+            height: 20px;
+            position: relative;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menu-toggle span {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .menu-toggle span:nth-child(1) { top: 0; }
+        .menu-toggle span:nth-child(2) { top: 9px; }
+        .menu-toggle span:nth-child(3) { top: 18px; }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg);
+            top: 9px;
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg);
+            top: 9px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            padding: 180px 50px 100px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 100px;
+            align-items: center;
+        }
+
+        .hero-text {
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInUp 1s ease 0.3s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 22px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 40px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            line-height: 1.05;
+            margin-bottom: 24px;
+            letter-spacing: -1.5px;
+            color: var(--text-primary);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-description {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 50px;
+            max-width: 600px;
+            border-left: 3px solid var(--accent);
+            padding-left: 24px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 38px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .hero-image {
+            position: relative;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInUp 1s ease 0.6s forwards;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+        }
+
+        .image-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: var(--shadow-xl);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: var(--transition);
+            transform: scale(1.02);
+        }
+
+        .image-wrapper:hover img {
+            transform: scale(1.05);
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(99, 102, 241, 0.15), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .image-wrapper:hover .image-overlay {
+            opacity: 1;
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: absolute;
+            padding: 22px 30px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            animation: floatIn 0.8s ease forwards, float 4s ease-in-out infinite 1s;
+            animation-delay: var(--delay, 0.8s);
+            z-index: 10;
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .floating-element-1 {
+            top: -40px;
+            right: -40px;
+            animation-delay: 1s;
+        }
+
+        .floating-element-2 {
+            bottom: -40px;
+            left: -40px;
+            animation-delay: 1.2s;
+        }
+
+        .element-stat {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 5px;
+            line-height: 1;
+        }
+
+        .element-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+        }
+
+        /* AI Usage Tiles - Single Line */
+        .ai-tiles-container {
+            margin-top: 50px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease 1s forwards;
+        }
+
+        .ai-tiles-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-tiles-title i {
+            color: var(--accent);
+        }
+
+        .ai-tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+
+        .ai-tile {
+            padding: 15px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .ai-tile:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
+        }
+
+        .ai-icon {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .ai-name {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Section Styles */
+        .section {
+            padding: var(--section-spacing) 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 100px;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+
+        .section-description {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Services Grid - SINGLE LINE LAYOUT */
+        .services-container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .service-card {
+            padding: 45px 35px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(40px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card.visible {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .service-card:nth-child(1) { animation-delay: 0.1s; }
+        .service-card:nth-child(2) { animation-delay: 0.2s; }
+        .service-card:nth-child(3) { animation-delay: 0.3s; }
+        .service-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .service-card:hover {
+            transform: translateY(-12px);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            font-size: 2.8rem;
+            color: var(--accent);
+            margin-bottom: 30px;
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .service-card:hover .service-icon {
+            transform: translateY(-8px) scale(1.1);
+        }
+
+        .service-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .service-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent) 0%, transparent 100%);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            margin-bottom: 80px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(40px);
+            width: 50%;
+        }
+
+        .timeline-item:nth-child(odd) {
+            padding-right: 70px;
+            margin-left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            padding-left: 70px;
+            margin-left: 50%;
+        }
+
+        .timeline-item.visible {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.3s; }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border: 4px solid var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 0 6px white;
+            transition: var(--transition);
+        }
+
+        .timeline-item:nth-child(odd)::before {
+            right: -8px;
+        }
+
+        .timeline-item:nth-child(even)::before {
+            left: -8px;
+        }
+
+        .timeline-item:hover::before {
+            transform: scale(1.3);
+            box-shadow: 0 0 0 8px rgba(99, 102, 241, 0.1);
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .timeline-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .timeline-company {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .timeline-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* Skills */
+        .skills-container {
+            max-width: 700px;
+            margin: 80px auto 0;
+            padding: 50px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .skills-container.visible {
+            animation: fadeInUp 0.6s ease forwards;
+            animation-delay: 0.5s;
+        }
+
+        .skill-category {
+            margin-bottom: 45px;
+        }
+
+        .skill-category:last-child {
+            margin-bottom: 0;
+        }
+
+        .skill-category-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .skill-category-title::before {
+            content: '';
+            width: 30px;
+            height: 3px;
+            background: var(--accent);
+            display: block;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .skill-tag {
+            padding: 12px 24px;
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .skill-tag:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Portfolio */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        .portfolio-item {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .portfolio-item.visible {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .portfolio-item:nth-child(1) { animation-delay: 0.1s; }
+        .portfolio-item:nth-child(2) { animation-delay: 0.2s; }
+        .portfolio-item:nth-child(3) { animation-delay: 0.3s; }
+
+        .portfolio-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            background: white;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            height: 100%;
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-12px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .portfolio-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .portfolio-card:hover .portfolio-image {
+            transform: scale(1.1);
+        }
+
+        .portfolio-content {
+            padding: 35px;
+        }
+
+        .portfolio-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .portfolio-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(99, 102, 241, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .portfolio-card:hover .portfolio-overlay {
+            opacity: 1;
+        }
+
+        .portfolio-link {
+            padding: 16px 34px;
+            background: white;
+            color: var(--accent);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .portfolio-link:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Achievements */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        .achievement-card {
+            padding: 45px 30px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            text-align: center;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(40px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-card.visible {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .achievement-card:nth-child(1) { animation-delay: 0.1s; }
+        .achievement-card:nth-child(2) { animation-delay: 0.2s; }
+        .achievement-card:nth-child(3) { animation-delay: 0.3s; }
+        .achievement-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .achievement-card:hover {
+            transform: translateY(-12px);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .achievement-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transition: left 0.7s;
+        }
+
+        .achievement-card:hover::before {
+            left: 100%;
+        }
+
+        .achievement-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 20px;
+            display: block;
+            line-height: 1;
+        }
+
+        .achievement-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* Contact */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 35px;
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        .contact-card {
+            padding: 45px 35px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            text-align: center;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(40px);
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-card.visible {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .contact-card:nth-child(1) { animation-delay: 0.1s; }
+        .contact-card:nth-child(2) { animation-delay: 0.2s; }
+        .contact-card:nth-child(3) { animation-delay: 0.3s; }
+        .contact-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .contact-card:hover {
+            transform: translateY(-12px);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .contact-icon {
+            font-size: 2.8rem;
+            color: var(--accent);
+            margin-bottom: 25px;
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .contact-card:hover .contact-icon {
+            transform: translateY(-8px) rotateY(360deg);
+        }
+
+        .contact-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            font-weight: 500;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .contact-info {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            line-height: 1.4;
+            word-break: break-word;
+            display: block;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 80px 50px 60px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            margin-top: 100px;
+            background: white;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .social-link {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 20px;
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .scroll-dot {
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .scroll-dot.active {
+            border-color: var(--accent);
+            background: var(--accent);
+            transform: scale(1.3);
+        }
+
+        .scroll-dot::after {
+            content: attr(data-section);
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            opacity: 0;
+            transition: var(--transition);
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .scroll-dot:hover::after {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .ai-tiles-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 80px;
+                text-align: center;
+            }
+
+            .image-container {
+                margin: 0 auto;
+            }
+
+            .hero-actions {
+                justify-content: center;
+            }
+            
+            .hero-description {
+                margin: 0 auto 50px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            
+            .ai-tiles-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navigation {
+                padding: 20px 30px;
+            }
+            
+            .nav-actions {
+                display: none;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100vh;
+                background: white;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 30px;
+                transition: var(--transition);
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .hero,
+            .section {
+                padding: 120px 30px 80px;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .timeline::before {
+                left: 30px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 0;
+                margin-left: 0;
+            }
+
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                padding-left: 70px;
+                margin-left: 0;
+            }
+
+            .timeline-item::before {
+                left: 22px;
+            }
+
+            .floating-element {
+                display: none;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .scroll-indicator {
+                display: none;
+            }
+            
+            .ai-tiles-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .hero-tag {
+                font-size: 0.7rem;
+                padding: 8px 18px;
+            }
+            
+            .section {
+                padding: 100px 20px 60px;
+            }
+            
+            .service-card,
+            .contact-card,
+            .achievement-card {
+                padding: 35px 25px;
+            }
+            
+            .ai-tiles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .contact-info {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Smooth Wrapper -->
+    <div class="smooth-wrapper">
+        <!-- Navigation -->
+        <nav class="navigation">
+            <a href="#home" class="logo">AN</a>
+            <ul class="nav-links">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#resume">Resume</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#achievements">Achievements</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="anand_resume_updated.pdf" class="btn-resume" download="Anand_Namastemath_Resume.pdf">
+                    <i class="fas fa-download"></i>
+                    Resume
+                </a>
+            </div>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <div class="scroll-dot active" data-section="Home" data-target="home"></div>
+            <div class="scroll-dot" data-section="About" data-target="about"></div>
+            <div class="scroll-dot" data-section="Resume" data-target="resume"></div>
+            <div class="scroll-dot" data-section="Portfolio" data-target="portfolio"></div>
+            <div class="scroll-dot" data-section="Achievements" data-target="achievements"></div>
+            <div class="scroll-dot" data-section="Contact" data-target="contact"></div>
+        </div>
+
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-background"></div>
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="hero-tag">
+                        <i class="fas fa-bolt"></i>
+                        Available for Opportunities
+                    </div>
+                    <h1 class="hero-title">
+                        Anand<br>Namastemath
+                    </h1>
+                    <p class="hero-subtitle">Senior Software Engineer</p>
+                    <p class="hero-description">
+                        Backend Engineering Lead with 5+ years of experience architecting scalable systems for enterprise-grade applications. Currently spearheading Verizon Cloud modernization, migrating legacy systems to high-performance Spring Boot 3 microservices with containerized deployments on OpenShift.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#contact" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Get in Touch
+                        </a>
+                        <a href="#portfolio" class="btn btn-secondary">
+                            <i class="fas fa-briefcase"></i>
+                            View Portfolio
+                        </a>
+                    </div>
+                    
+                    <!-- AI Usage Tiles -->
+                    <div class="ai-tiles-container">
+                        <div class="ai-tiles-title">
+                            <i class="fas fa-robot"></i>
+                            AI-Accelerated Development
+                        </div>
+                        <div class="ai-tiles-grid">
+                            <div class="ai-tile">
+                                <div class="ai-icon">🤖</div>
+                                <div class="ai-name">Claude AI</div>
+                            </div>
+                            <div class="ai-tile">
+                                <div class="ai-icon">⚡</div>
+                                <div class="ai-name">GitHub Copilot</div>
+                            </div>
+                            <div class="ai-tile">
+                                <div class="ai-icon">🚀</div>
+                                <div class="ai-name">AI Code Review</div>
+                            </div>
+                            <div class="ai-tile">
+                                <div class="ai-icon">💡</div>
+                                <div class="ai-name">AI Architecture</div>
+                            </div>
+                            <div class="ai-tile">
+                                <div class="ai-icon">🎯</div>
+                                <div class="ai-name">AI Testing</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="image-container">
+                        <div class="image-wrapper">
+                            <img src="https://media.licdn.com/dms/image/v2/D5603AQGNjJg6wVY_LQ/profile-displayphoto-crop_800_800/B56ZnWbxc7H8AI-/0/1760239230372?e=1765411200&v=beta&t=KsnTa4YACm0Bjc3xaIpTz5jTnTciMomNts6XHVZGSlM" alt="Anand Namastemath">
+                            <div class="image-overlay"></div>
+                        </div>
+                        <div class="floating-element floating-element-1">
+                            <div class="element-stat">5+</div>
+                            <div class="element-label">Years Experience</div>
+                        </div>
+                        <div class="floating-element floating-element-2">
+                            <div class="element-stat">50+</div>
+                            <div class="element-label">Projects Delivered</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section - SINGLE LINE LAYOUT -->
+        <section id="about" class="section">
+            <div class="section-header">
+                <div class="section-tag">Expertise</div>
+                <h2 class="section-title">What I Do</h2>
+                <p class="section-description">
+                    Specialized in building robust backend systems, cloud infrastructure, and scalable architectures with a focus on performance optimization
+                </p>
+            </div>
+            <div class="services-container">
+                <div class="services-grid">
+                    <div class="service-card">
+                        <i class="fas fa-code service-icon"></i>
+                        <h3 class="service-title">Backend Engineering</h3>
+                        <p class="service-description">
+                            Expert in Java (8, 17, 21), Spring Boot 3, and microservices architecture. Delivered 8 of 10 core microservices for Google Photos with 99.9% uptime. Proficient in RESTful APIs, Spring Cloud, and event-driven design patterns. Focus on clean, maintainable code with 95%+ test coverage.
+                        </p>
+                    </div>
+                    <div class="service-card">
+                        <i class="fas fa-project-diagram service-icon"></i>
+                        <h3 class="service-title">System Architecture</h3>
+                        <p class="service-description">
+                            Designing scalable, high-performance microservices systems bridging business & technology requirements. Experience with API Gateway patterns, load balancing, OAuth2/JWT authentication, and event-driven architectures. Led migration from monolithic to microservices architecture.
+                        </p>
+                    </div>
+                    <div class="service-card">
+                        <i class="fas fa-cloud service-icon"></i>
+                        <h3 class="service-title">DevOps & Cloud</h3>
+                        <p class="service-description">
+                            End-to-end AWS infrastructure (EC2, RDS, ALB, S3), Docker/OpenShift containerization, and CI/CD pipelines. Achieved 30% cost reduction and 87.5% faster deployments. Experience with infrastructure-as-code, automated deployment strategies, and container orchestration.
+                        </p>
+                    </div>
+                    <div class="service-card">
+                        <i class="fas fa-tachometer-alt service-icon"></i>
+                        <h3 class="service-title">Performance Optimization</h3>
+                        <p class="service-description">
+                            Optimized API response times by 40% (800ms → 480ms) through Redis caching, database query optimization, and proper indexing strategies. Implemented resumable upload protocols reducing server memory overhead by 70%. Expertise in profiling, monitoring, and system tuning.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resume Section -->
+        <section id="resume" class="section">
+            <div class="section-header">
+                <div class="section-tag">Experience</div>
+                <h2 class="section-title">Professional Journey</h2>
+                <p class="section-description">
+                    A timeline of my professional growth, technical achievements, and career progression
+                </p>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">September 2025 – Present</div>
+                    <h3 class="timeline-title">Engineer III - Software Development</h3>
+                    <p class="timeline-company">Verizon India</p>
+                    <p class="timeline-description">
+                        Leading Verizon Cloud modernization (Project Leo), migrating from legacy TypeScript monolith to scalable Java 21/Spring Boot 3 microservices. Architected 8 of 10 core microservices with 99.9% uptime. Built AWS-based CI/CD pipeline reducing deployment time from 2 hours to 15 minutes. Engineered custom chunked/resumable upload protocol reducing server memory overhead by 70%.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">January 2021 – September 2025</div>
+                    <h3 class="timeline-title">Lead Engineer</h3>
+                    <p class="timeline-company">Snapbizz Cloudtech Pvt Ltd</p>
+                    <p class="timeline-description">
+                        Led 4-member backend team establishing code review practices maintaining 95%+ test coverage and zero P0 incidents for 6+ months. Owned full AWS infrastructure achieving 30% cost reduction ($1200/month savings). Implemented Docker Compose environments reducing new developer onboarding from 2 days to 2 hours. Optimized database queries improving API response times by 40%.
+                    </p>
+                </div>
+            </div>
+            <div class="section-header" style="margin-top: 120px;">
+                <div class="section-tag">Skills</div>
+                <h2 class="section-title">Technical Expertise</h2>
+            </div>
+            <div class="skills-container">
+                <div class="skill-category">
+                    <h3 class="skill-category-title">Languages & Frameworks</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Java 21</span>
+                        <span class="skill-tag">Spring Boot 3.3</span>
+                        <span class="skill-tag">Spring Cloud</span>
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">RESTful APIs</span>
+                        <span class="skill-tag">Microservices</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3 class="skill-category-title">Databases & Caching</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">MySQL</span>
+                        <span class="skill-tag">PostgreSQL</span>
+                        <span class="skill-tag">MongoDB</span>
+                        <span class="skill-tag">Redis</span>
+                        <span class="skill-tag">Spring Data JPA</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3 class="skill-category-title">DevOps & Cloud</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">OpenShift</span>
+                        <span class="skill-tag">AWS (EC2, RDS, S3)</span>
+                        <span class="skill-tag">CI/CD Pipelines</span>
+                        <span class="skill-tag">Nginx</span>
+                        <span class="skill-tag">Kubernetes</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Section -->
+        <section id="portfolio" class="section">
+            <div class="section-header">
+                <div class="section-tag">Projects</div>
+                <h2 class="section-title">Featured Work</h2>
+                <p class="section-description">
+                    Selected projects showcasing technical expertise, innovative solutions, and measurable business impact
+                </p>
+            </div>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <div class="portfolio-card">
+                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Google Photos Modernization" class="portfolio-image">
+                        <div class="portfolio-content">
+                            <h3 class="portfolio-title">Verizon Cloud Modernization</h3>
+                            <p class="portfolio-description">
+                                Led migration from legacy monolith to Java 21/Spring Boot 3 microservices. Delivered production-ready MVP in 2 months using AI-accelerated development. Achieved 99.9% uptime with containerized OpenShift deployments.
+                            </p>
+                        </div>
+                        <div class="portfolio-overlay">
+                            <a href="highlevelArch.html" class="portfolio-link" target="_blank">View Architecture</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-card">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="API Gateway" class="portfolio-image">
+                        <div class="portfolio-content">
+                            <h3 class="portfolio-title">Custom API Gateway</h3>
+                            <p class="portfolio-description">
+                                Built Spring Cloud Gateway with OAuth2/JWT authentication, reducing latency by 45%. Implemented rate limiting, request routing, and centralized authentication for enterprise compliance.
+                            </p>
+                        </div>
+                        <div class="portfolio-overlay">
+                            <a href="photos-api-gateway-architecture.html" class="portfolio-link" target="_blank">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-card">
+                        <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Resumable Upload System" class="portfolio-image">
+                        <div class="portfolio-content">
+                            <h3 class="portfolio-title">Resumable Upload System</h3>
+                            <p class="portfolio-description">
+                                Engineered custom chunked upload protocol (enhanced TUS) for multi-GB file uploads, reducing upload failures by 70% and server memory overhead. Implemented HTTP Range requests for video streaming.
+                            </p>
+                        </div>
+                        <div class="portfolio-overlay">
+                            <a href="tus-resumable-upload-service-documentation.html" class="portfolio-link" target="_blank">View Documentation</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Achievements Section -->
+        <section id="achievements" class="section">
+            <div class="section-header">
+                <div class="section-tag">Milestones</div>
+                <h2 class="section-title">Key Achievements</h2>
+                <p class="section-description">
+                    Quantifiable results and measurable impact across various projects and initiatives
+                </p>
+            </div>
+            <div class="achievements-grid">
+                <div class="achievement-card">
+                    <span class="achievement-number">87.5%</span>
+                    <p class="achievement-text">Reduced deployment time from 2 hours to 15 minutes through CI/CD pipeline automation and containerized deployments on OpenShift</p>
+                </div>
+                <div class="achievement-card">
+                    <span class="achievement-number">99.9%</span>
+                    <p class="achievement-text">Service uptime achieved for mission-critical Verizon Cloud microservices with robust health checks and monitoring implementation</p>
+                </div>
+                <div class="achievement-card">
+                    <span class="achievement-number">40%</span>
+                    <p class="achievement-text">Improved API response times through Redis caching strategies, database query optimization, and proper indexing implementation</p>
+                </div>
+                <div class="achievement-card">
+                    <span class="achievement-number">30%</span>
+                    <p class="achievement-text">Infrastructure cost reduction achieved through strategic containerization, cloud optimization, and resource consolidation</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="section-header">
+                <div class="section-tag">Connect</div>
+                <h2 class="section-title">Get in Touch</h2>
+                <p class="section-description">
+                    Feel free to reach out for collaborations, opportunities, or just a friendly conversation about technology
+                </p>
+            </div>
+            <div class="contact-grid">
+                <a href="tel:+917026310101" class="contact-card">
+                    <i class="fas fa-phone contact-icon"></i>
+                    <div class="contact-label">PHONE</div>
+                    <div class="contact-info">+91 7026310101</div>
+                </a>
+                <a href="mailto:anamastemath@gmail.com" class="contact-card">
+                    <i class="fas fa-envelope contact-icon"></i>
+                    <div class="contact-label">EMAIL</div>
+                    <div class="contact-info">anamastemath@gmail.com</div>
+                </a>
+                <a href="https://linkedin.com/in/anand-namastemath" class="contact-card" target="_blank">
+                    <i class="fab fa-linkedin contact-icon"></i>
+                    <div class="contact-label">LINKEDIN</div>
+                    <div class="contact-info">/in/anand-namastemath</div>
+                </a>
+                <a href="https://github.com/asn-07" class="contact-card" target="_blank">
+                    <i class="fab fa-github contact-icon"></i>
+                    <div class="contact-label">GITHUB</div>
+                    <div class="contact-info">github.com/asn-07</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="social-links">
+                <a href="https://linkedin.com/in/anand-namastemath" class="social-link" target="_blank">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="https://github.com/asn-07" class="social-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+            <p>&copy; 2025 Anand Namastemath. All rights reserved.</p>
+            <p class="copyright">
+                Crafted with precision, elegance, and attention to detail
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mark wrapper as loaded
+            document.querySelector('.smooth-wrapper').classList.add('loaded');
+
+            // Navigation
+            const nav = document.querySelector('.navigation');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            const navItems = document.querySelectorAll('.nav-links a');
+            const scrollDots = document.querySelectorAll('.scroll-dot');
+
+            // Scroll event for nav background
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+
+                // Update scroll indicator
+                const sections = document.querySelectorAll('section[id]');
+                let current = 'home';
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (window.scrollY >= sectionTop - 200) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                scrollDots.forEach(dot => {
+                    dot.classList.remove('active');
+                    if (dot.dataset.target === current) {
+                        dot.classList.add('active');
+                    }
+                });
+
+                // Update nav links
+                navItems.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').slice(1) === current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // Mobile menu toggle
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+
+            // Close mobile menu on link click
+            navItems.forEach(link => {
+                link.addEventListener('click', () => {
+                    menuToggle.classList.remove('active');
+                    navLinks.classList.remove('active');
+                });
+            });
+
+            // Scroll indicator click
+            scrollDots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const target = document.getElementById(dot.dataset.target);
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Intersection Observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements for animation
+            document.querySelectorAll('.service-card, .timeline-item, .skills-container, .portfolio-item, .achievement-card, .contact-card').forEach(element => {
+                observer.observe(element);
+            });
+
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Parallax effect for hero image
+            window.addEventListener('scroll', () => {
+                const scrolled = window.scrollY;
+                const heroImage = document.querySelector('.hero-image');
+                if (heroImage && scrolled < window.innerHeight) {
+                    heroImage.style.transform = `translateY(${scrolled * 0.15}px)`;
+                }
+            });
+
+            // Initialize timeline animation
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.2}s`;
+            });
+
+            // Add hover effect to service cards
+            document.querySelectorAll('.service-card, .ai-tile').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-12px)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    if (!card.classList.contains('visible')) return;
+                    card.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Fix for AI tiles animation
+            const aiTilesContainer = document.querySelector('.ai-tiles-container');
+            if (aiTilesContainer) {
+                observer.observe(aiTilesContainer);
+            }
+        });
+
+        // Handle images loading
+        window.addEventListener('load', () => {
+            // Add loaded class to images for smooth transitions
+            document.querySelectorAll('img').forEach(img => {
+                img.classList.add('loaded');
+            });
+            
+            // Trigger initial scroll for animations
+            window.dispatchEvent(new Event('scroll'));
+        });
+    </script>
+</body>
+</html>
